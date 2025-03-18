@@ -9,7 +9,7 @@ class Profile(models.Model):
         NS='Not Specified','NS'
     user=models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True ,unique=True)
     gender=models.CharField(choices=GenderChoices.choices ,max_length=128 ,default=GenderChoices.NS)
-    age=models.IntegerField(null=True) 
+    birth_date=models.DateField(null=True) 
 
 
     
