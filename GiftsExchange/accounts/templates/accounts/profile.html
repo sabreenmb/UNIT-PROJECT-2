@@ -1,0 +1,49 @@
+{%extends 'main/base.html'%}
+
+{%block content %}
+
+<section class="row d-flex justify-content-center gap-3 mt-4">
+    <div class="d-flex flex-row justify-content-between align-items-center px-4">
+        <h3>My Account</h3>
+        <a class="btn btn-danger" href="{%url 'accounts:logout_view'%}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+
+    </div>
+
+    <hr>
+    <section class="col-11 col-md-8 ">
+        <h3>Personal information</h3>
+        <div class="row d-flex flex-row justify-content-center justify-content-sm-start align-items-center card shadow">
+            <div class='col-auto mx-auto mx-sm-1'>
+                <i class="user-icon bi bi-person-circle"></i>
+            </div>
+            <div class='col-auto d-flex flex-column justify-content-start align-items-start py-sm-4'>
+
+                <h5>@{{request.user.username}}</h5>
+                <h6><span>Full Name : </span>{{request.user.get_full_name}}</h6>
+                <h6><span>Email Adress : </span> {{request.user.email}}</h6>
+                <h6><span>Gender : </span> {{request.user.profile.gender}}</h6>
+                <h6><span>Date of birth : </span> {{request.user.profile.age}}</h6>
+
+            </div>
+        </div>
+
+    </section>
+    <section class="col-11 col-md-8 ">
+        <h3>Manage Account Settings</h3>
+        <div class="row d-flex flex-row justify-content-center justify-content-sm-start align-items-center card shadow">
+            <div class='col-auto m-3'>
+                <a class="text-decoration-none w-100 ms-3 d-inline-flex justify-content-start" href="#">Change email address</a>
+                <a class="text-decoration-none w-100 ms-3 d-inline-flex justify-content-start" href="#">Change password</a>
+                <a class="text-decoration-none w-100 ms-3 d-inline-flex justify-content-start" href="#">Delete account</a>
+                </div>
+   
+        </div>
+
+    </section>
+ 
+</section>
+
+
+
+
+{%endblock%}

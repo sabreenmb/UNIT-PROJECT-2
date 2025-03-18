@@ -1,3 +1,7 @@
+
+header{
+    background-color: aquamarine;
+}
 .navbar-nav .nav-link.active{
     color: red;
 }
@@ -9,3 +13,38 @@
 .navbar-nav .nav-link:hover{
     color: orange;
 }
+.main-section{
+    height: 80vh;
+}
+.card-custom{
+    background-color: rgba(255, 0, 0, 0.397);
+    margin: auto auto;
+
+}
+.user-info{
+    border: none;
+    height: 40px;
+    width: 40px;
+    background-color: red;
+
+}
+.user-info a i{
+    display: inline-flex;
+    align-items: center;
+    color: red;
+
+
+}
+.user-icon{
+    font-size: 100px;
+    text-align: center;
+    align-self: center;
+
+}
+.btn{
+    border: none;
+}
+span{
+    color: red;
+}
+
