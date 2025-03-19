@@ -1,9 +1,9 @@
 {
-    "$schema": "https://railway.app/railway.schema.json",
-    "build": {
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
       "builder": "RAILPACK"
-    },
-    "deploy": {
+  },
+  "deploy": {
       "startCommand": "cd GiftsExchange && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn GiftsExchange.wsgi"
-    }
+  }
 }
