@@ -15,10 +15,10 @@ def sign_up_view(request:HttpRequest):
                 new_user.save()
                 profile:Profile=Profile(user=new_user)
                 profile.save()
-                
-            
+
             messages.success(request, "Registered User Successfuly","alert-success")
             return redirect('accounts:sign_in_view')
+        
         except IntegrityError as e :
             messages.error(request, "Please try another username. This username already in use","alert-danger")
             print("error :",e)
@@ -57,9 +57,11 @@ def logout_view(request:HttpRequest):
 def user_profile_view(request:HttpRequest, username):
     try:
         user= User.objects.get(username=username)
+        if not Profile.objects.filter(user=user).first():
+            new_profile = Profile(user=user)
+            new_profile.save()
 
-        profile:Profile=user.profile
 
-    except:
-        print('')
+    except Exception as e:
+        print(e)
     return render(request,"accounts/profile.html")
