@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-pxj-r)*9+(m_a(itol4^48*-i*6b-fo1c43-9hmk17^g$agi2l
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
+CSRF_TRUSTED_ORIGINS=["https://giftscircle.up.railway.app","http://127.0.0.1"]
 
 # Application definition
 
