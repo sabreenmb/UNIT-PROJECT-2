@@ -1,0 +1,104 @@
+{%extends 'main/base.html'%}
+
+{%block content %}{% if not request.user.is_authenticated %}
+<section>
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Authentication Required</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please login to access this feature.</p>
+                </div>
+                <div class="modal-body row">
+                    <a href="{%url 'accounts:sign_in_view'%}" class="btn btn-danger col-4 mx-auto"
+                    aria-disabled="true"><i class="bi bi-person-fill"></i></button>
+                    sign in</a>
+                    </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endif %}
+
+<section class="main-section">
+    <form class="row g-3" action="{% url 'events:create_event_view'%}" method="post">
+        {%csrf_token%}
+        <!-- 
+    event_organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='organized_events')
+    event_title = models.CharField(max_length=1024)
+    event_date = models.DateField()
+    event_description = models.CharField(max_length=2048)
+    event_min_budget = models.IntegerField(default=10)
+    event_max_budget = models.IntegerField()
+    is_draw = models.BooleanField(default=False) -->
+
+        <div class="col-md-12">
+          <label for="title" class="form-label">Event Title</label>
+          <input type="text" class="form-control" id="event_title" name="event_title" required>
+        </div>
+        <div class="col-md-12">
+            <label for="event_date" class="form-label">Exchange Date</label>
+            <input type="date" class="form-control" id="event_date" name="event_date" required>
+        </div>
+        <div class="col-12">
+          <label for="event_description" class="form-label">Event Description</label>
+          <textarea type="text" class="form-control" id="event_description"  name="event_description" required></textarea>
+        </div>
+        <div class="col-md-6">
+            <label for="event_min_budget" class="form-label">Min Budget</label>
+            <input type="number" class="form-control" id="event_min_budget" name="event_min_budget" required>
+          </div>               
+          <div class="col-md-6">
+            <label for="event_max_budget" class="form-label">Max Budget</label>
+            <input type="number" class="form-control" id="event_max_budget" name="event_max_budget" required>
+          </div>        
+        <!-- <div class="col-md-6">
+            <label for="inputCity" class="form-label">City</label>
+            <input type="text" class="form-control" id="inputCity">
+          </div>
+        <div class="col-md-4">
+          <label for="inputState" class="form-label">State</label>
+          <select id="inputState" class="form-select">
+            <option selected>Choose...</option>
+            <option>...</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label for="inputZip" class="form-label">Zip</label>
+          <input type="text" class="form-control" id="inputZip">
+        </div> -->
+        <!-- <div class="col-12">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="gridCheck">
+            <label class="form-check-label" for="gridCheck">
+              Check me out
+            </label>
+          </div>
+        </div> -->
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">Sign in</button>
+        </div>
+      </form>
+
+</section>
+
+{% endblock%}
+
+{%block script%}
+
+<script>
+    // Automatically show the modal when the page loads if the user is not authenticated
+    document.addEventListener('DOMContentLoaded', function () {
+        var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+        myModal.show();
+    });
+</script>
+{%endblock%}
