@@ -1,0 +1,81 @@
+{%extends 'main/base.html'%}
+
+{%block content %}{% if not request.user.is_authenticated %}
+<section>
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Authentication Required</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please login to access this feature.</p>
+                </div>
+                <div class="modal-body row">
+                    <a href="{%url 'accounts:sign_in_view'%}" class="btn btn-danger col-4 mx-auto"
+                        aria-disabled="true"><i class="bi bi-person-fill"></i></button>
+                        sign in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{%else%}
+    {%if events%}
+    <section class="main-section">
+
+        {%for event in events%}
+        <div class="d-flex flex-column mb-3">
+            <div class="card shadow">
+                <p>{{event.event_organizer}}</p>
+                <p>{{event.event_title}}</p>
+                <p>{{event.event_date}}</p>
+                <p>{{event.event_min_budget}}</p>
+                <p>{{event.event_max_budget}}</p>
+                <p>{{event.is_draw}}</p>
+                <form action="{%url 'events:event_management_view'%}" method="get"> 
+                    <input type="hidden" name="event_id" value="{{event.id}}" >
+                    <button type="submit" class="btn btn-danger col-4 mx-auto"
+                    aria-disabled="true">manage the event</button>
+
+                </form>
+               
+            </div>
+        </div>
+
+
+        {%endfor%}
+    </section>
+    {%else%}
+    <section class="main-section">
+        <div class="card shadow">
+            <h1>does not have an event yet</h1>
+            <a href="{{new_event_url}}" class="btn btn-danger col-4 mx-auto"
+                aria-disabled="true">start your event</a>
+        </div>
+        </div>
+
+
+    </section>
+    {% endif %}
+{% endif %}
+
+
+{% endblock%}
+{%block script%}
+
+<script>
+    // Automatically show the modal when the page loads if the user is not authenticated
+    document.addEventListener('DOMContentLoaded', function () {
+        var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+        myModal.show();
+    });
+</script>
+{%endblock%}

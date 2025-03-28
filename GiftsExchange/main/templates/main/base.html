@@ -23,6 +23,8 @@
 </head>
 
 {%url 'main:home_view' as home_url %}
+{%url 'events:create_event_view' as new_event_url %}
+{%url 'events:user_events_view' as events_url %}
 
 <body>
     <header class="container-fuild fixid-top px-5">
@@ -40,10 +42,10 @@
                                 href="{{home_url}}">Home</a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link" href="#">Start New Event</a>
+                            <a class="nav-link" href="{{new_event_url}}">Start New Event</a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link" href="#">My Events</a>
+                            <a class="nav-link" href="{{events_url}}">My Events</a>
                         </li>
                         <li class="nav-item ">
                             <a class="nav-link" href="#">Participation</a>

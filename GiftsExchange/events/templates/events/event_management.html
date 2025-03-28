@@ -1,0 +1,167 @@
+{%extends 'main/base.html'%}
+
+{%block content %}{% if not request.user.is_authenticated %}
+<section>
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Authentication Required</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please login to access this feature.</p>
+                </div>
+                <div class="modal-body row">
+                    <a href="{%url 'accounts:sign_in_view'%}" class="btn btn-danger col-4 mx-auto"
+                        aria-disabled="true"><i class="bi bi-person-fill"></i></button>
+                        sign in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{%else%}
+<section >
+    <h1>Event > #{{event.id}}</h1>
+    <div class="card shadow event_info">
+
+        <div class="d-flex flex-column mb-3">
+            <p>{{event.event_organizer}}</p>
+            <p>{{event.event_title}}</p>
+            <p>{{event.event_date}}</p>
+            <p>{{event.event_min_budget}}</p>
+            <p>{{event.event_max_budget}}</p>
+            <p>{{event.is_draw}}</p>
+            <a href="{%url 'events:event_management_view'%}" class="btn btn-danger col-4 mx-auto"
+                aria-disabled="true">manage the event</a>
+        </div>
+        <div id="app" class="container">
+            <div class="row">
+              <div class="col-md-12">
+    
+                <div class="swiper-container">
+    
+                  <div class="swiper-wrapper timeline">
+                    <div class="swiper-slide">
+                      <div class="timestamp">
+                        Preparation
+                        <span class="date">April 2017<span>
+                      </div>
+                      <div class="status">
+                        <span>This is Title</span>
+                      </div>
+                    </div>
+                    <div class="swiper-slide">
+                      <div class="timestamp">
+                        <span class="date">May 2017<span>
+                      </div>
+                      <div class="status">
+                        <span>This is Second Title</span>
+                      </div>
+                    </div>
+                    <div class="swiper-slide">
+                      <div class="timestamp">
+                        <span class="date">June 2017<span>
+                      </div>
+                      <div class="status">
+                        <span>This is Third Title</span>
+                      </div>
+                    </div>
+                    <div class="swiper-slide">
+                      <div class="timestamp">
+                        <span class="date">July 2017<span>
+                      </div>
+                      <div class="status">
+                        <span>This is Fourth Title</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+    <h1>manage the event</h1>
+
+    <div class="card shadow p-2 p-md-4 row row-cols-2 row-cols-sm-4 row-cols-md-6 d-flex flex-row justify-content-start align-items-start">
+        <div class="d-flex flex-column col justify-content-center align-items-center text-center">
+            <a href="#" class="text-dark text-decoration-none">
+                <i class="bi bi-check-circle icons mb-3"></i>
+                <h6>Validate the event and send email invitations</h6>
+            </a>  
+        </div>
+ 
+        <div class="d-flex flex-column col justify-content-center align-items-center text-center">
+            <a href="#" class="text-dark text-decoration-none">
+                <i class="bi bi-pencil-square icons"></i>
+                <h6>Modify the event (date, description, etc.)</h6>
+            </a>  
+        </div>
+        <div class="d-flex flex-column col justify-content-center align-items-center text-center">
+            <a href="#" class="text-dark text-decoration-none">
+                <i class="bi bi-pencil-square icons"></i>
+                <h6>Draw rules</h6>
+            </a>  
+        </div>
+        <div class="d-flex flex-column col justify-content-center align-items-center text-center">
+            <a href="#" class="text-dark text-decoration-none">
+                <i class="bi bi-share-fill icons"></i> 
+                <h6>Share registration link</h6>
+            </a>  
+        </div>
+        <div class="d-flex flex-column col justify-content-center align-items-center text-center">
+            <a href="#" class="text-dark text-decoration-none">
+                <i class="bi bi-sliders2 icons"></i>
+                <h6>Manage options</h6>
+            </a>  
+        </div>
+        <div class="d-flex flex-column col justify-content-center align-items-center text-center">
+            <a href="#" class="text-dark text-decoration-none">
+                <i class="bi bi-palette-fill icons"></i>
+                <h6>Customize the design</h6>
+            </a>  
+        </div>
+        <div class="d-flex flex-column col justify-content-center align-items-center text-center">
+            <a href="#" class="text-dark text-decoration-none">
+                <i class="bi bi-x-circle icons"></i>
+                <h6>Cancel the Event</h6>
+            </a>  
+        </div>
+
+    </div>
+    <h1>participant List</h1>
+
+    <div class="card shadow participants">
+        <table>
+            <tr>
+                <th>name</th>
+                <th>email</th>
+            </tr>
+            {%for participant in participants%}
+            <tr>
+                <td>{{participant.user.username}}</td>
+                <td>{{participant.user.email}}</td>
+                <td><i class="bi bi-check-circle"></i></td>
+            </tr>
+            {%endfor%}
+            {%for participant in unconfirmed_participants%}
+            <tr>
+                <td>{{participant.name}}</td>
+                <td>{{participant.email}}</td>
+                <td><i class="bi bi-x-circle"></i></td>
+            </tr>
+            {%endfor%}
+        </table>
+
+    </div>
+
+
+</section>
+{% endif %}
+
+
+{% endblock%}

@@ -15,14 +15,22 @@ class Event(models.Model):
     def __str__(self):
         return self.event_title
 
+class PlaceholderParticipant(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='placeholder_participants')
+    name = models.CharField(max_length=200)  # Placeholder for participant's name
+    email = models.EmailField(unique=True)  # Placeholder for participant's email
 
-# class Participant(models.Model):
-#     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='participants')
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)  # Each user is a participant
-#     wishlist = models.JSONField(default=dict)  # Store wishlist as a JSON field
+    def __str__(self):
+        return f"{self.name} ({self.email})"
+    
+class EventParticipant(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='participants')  # Each event can have multiple participants
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='participants',default=None)  # A user can participate in multiple events
+    wishlist = models.JSONField(default=list)  # Store wishlist as a list instead of a dictionary
 
-#     def __str__(self):
-#         return self.user.username
+    def __str__(self):
+        return f"{self.user.username} in {self.event.event_title} {self.wishlist}"
+    
 
 
 # class DrawResult(models.Model):

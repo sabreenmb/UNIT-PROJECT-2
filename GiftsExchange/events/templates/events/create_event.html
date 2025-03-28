@@ -3,7 +3,8 @@
 {%block content %}{% if not request.user.is_authenticated %}
 <section>
     <!-- Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -15,9 +16,9 @@
                 </div>
                 <div class="modal-body row">
                     <a href="{%url 'accounts:sign_in_view'%}" class="btn btn-danger col-4 mx-auto"
-                    aria-disabled="true"><i class="bi bi-person-fill"></i></button>
-                    sign in</a>
-                    </div>
+                        aria-disabled="true"><i class="bi bi-person-fill"></i></button>
+                        sign in</a>
+                </div>
             </div>
         </div>
     </div>
@@ -25,38 +26,33 @@
 
 {% endif %}
 
-<section class="main-section">
-    <form class="row g-3" action="{% url 'events:create_event_view'%}" method="post">
+<section class="">
+    <h2>1 Your Event</h2>
+    <form class="row g-3" action="{% url 'events:create_event_view'%}" method="POST">
         {%csrf_token%}
-        <!-- 
-    event_organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='organized_events')
-    event_title = models.CharField(max_length=1024)
-    event_date = models.DateField()
-    event_description = models.CharField(max_length=2048)
-    event_min_budget = models.IntegerField(default=10)
-    event_max_budget = models.IntegerField()
-    is_draw = models.BooleanField(default=False) -->
+
 
         <div class="col-md-12">
-          <label for="title" class="form-label">Event Title</label>
-          <input type="text" class="form-control" id="event_title" name="event_title" required>
+            <label for="event_title" class="form-label">Event Title</label>
+            <input type="text" class="form-control" id="event_title" name="event_title" required>
         </div>
         <div class="col-md-12">
             <label for="event_date" class="form-label">Exchange Date</label>
             <input type="date" class="form-control" id="event_date" name="event_date" required>
         </div>
         <div class="col-12">
-          <label for="event_description" class="form-label">Event Description</label>
-          <textarea type="text" class="form-control" id="event_description"  name="event_description" required></textarea>
+            <label for="event_description" class="form-label">Event Description</label>
+            <textarea type="text" class="form-control" id="event_description" name="event_description"
+                required></textarea>
         </div>
         <div class="col-md-6">
             <label for="event_min_budget" class="form-label">Min Budget</label>
             <input type="number" class="form-control" id="event_min_budget" name="event_min_budget" required>
-          </div>               
-          <div class="col-md-6">
+        </div>
+        <div class="col-md-6">
             <label for="event_max_budget" class="form-label">Max Budget</label>
             <input type="number" class="form-control" id="event_max_budget" name="event_max_budget" required>
-          </div>        
+        </div>
         <!-- <div class="col-md-6">
             <label for="inputCity" class="form-label">City</label>
             <input type="text" class="form-control" id="inputCity">
@@ -80,18 +76,87 @@
             </label>
           </div>
         </div> -->
-        
-        <div class="col-12">
-          <button type="submit" class="btn btn-danger">Start Event</button>
+
+
+
+        <h2>2 Participant List</h2>
+
+        <div class="card shadow p-4">
+            <p>Below, list the participants in your event. Not sure who is participating yet? No problem, just share a link to allow everyone to register.
+                You can rule out undesirable participant pairings later</p>
+            <div class="row participant-input" id="participant-1">
+                <div class="col-5">
+                    <label for="participant_name" class="form-label">Name:</label>
+                </div>
+                <div class="col-5">
+                    <label for="participant_email" class="form-label">Email:</label>
+                </div>
+            </div>
+            <div id="participant-container"> <!-- Container for participant inputs -->
+
+                <div class="row participant-input mb-1" id="participant-1">
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" id="participant_name_1" name="participant_name_1"
+                            placeholder="Name.." value="{{user.get_full_name}}" required>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="email" class="form-control" id="participant_email_1" name="participant_email_1"
+                            placeholder="Email.." value="{{user.email}}" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="button" class="btn btn-danger" value="Remove" onclick="removeParticipant(this)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <input type="button" class="btn btn-primary" value="Add Participant" onclick="addParticipant()">
+            </div>
         </div>
-      </form>
+
+        <div class="d-flex flex-row justify-content-center ">
+            <button type="submit" class="btn btn-danger w-50">Start Event</button>
+        </div>
+    </form>
+
 
 </section>
+
 
 {% endblock%}
 
 {%block script%}
+<script>
+    let participantCount = 1;  // Initial count for identifying participant input IDs
 
+    function addParticipant() {
+        participantCount++;  // Increment the count for unique IDs
+
+        // Create a new div for the participant input
+        const newParticipant = `
+            <div class="row participant-input mb-1" id="participant-${participantCount}">
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="participant_name_${participantCount}" placeholder="Name.." name="participant_name_${participantCount}" required>
+                </div>
+                <div class="col-md-5">
+                    <input type="email" class="form-control" id="participant_email_${participantCount}" placeholder="Email.." name="participant_email_${participantCount}" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="button" class="btn btn-danger" value="Remove" onclick="removeParticipant(this)">
+                </div>
+            </div>
+        `;
+
+        // Append the newly created participant input div to the participant container
+        document.getElementById('participant-container').insertAdjacentHTML('beforeend', newParticipant);
+    }
+
+    function removeParticipant(button) {
+        // Remove the participant input section
+        const participantRow = button.closest('.participant-input');
+        participantRow.remove();
+    }
+</script>
 <script>
     // Automatically show the modal when the page loads if the user is not authenticated
     document.addEventListener('DOMContentLoaded', function () {
