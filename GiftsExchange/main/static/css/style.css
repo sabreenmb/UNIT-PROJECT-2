@@ -2,6 +2,18 @@
 header{
     background-color: aquamarine;
 }
+button {
+    appearance: auto;
+    box-sizing: border-box;
+    background-color: transparent;
+    margin: 0em;
+    padding-block: 1px;
+    padding-inline: 6px;
+    border-width: 0px;
+    border-style: none;
+    border-color: transparent;
+    border-image: initial;
+}
 .navbar-nav .nav-link.active{
     color: red;
 }

@@ -1,0 +1,155 @@
+{%extends 'main/base.html'%}
+
+{%block content %}{% if not request.user.is_authenticated %}
+<section>
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Authentication Required</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please login to access this feature.</p>
+                </div>
+                <div class="modal-body row">
+                    <a href="{%url 'accounts:sign_in_view'%}" class="btn btn-danger col-4 mx-auto"
+                        aria-disabled="true"><i class="bi bi-person-fill"></i></button>
+                        sign in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endif %}
+
+<section class="">
+    <h2>1 Your Event</h2>
+    <form class="row g-3" action="{% url 'events:update_event_view' event.id%}" method="POST">
+        {%csrf_token%}
+
+
+        <div class="col-md-12">
+            <label for="event_title" class="form-label">Event Title</label>
+            <input type="text" class="form-control" id="event_title" name="event_title" value="{{event.event_title}}" required>
+        </div>
+        <div class="col-md-12">
+            <label for="event_date" class="form-label">Exchange Date</label>
+            <input type="date" class="form-control" id="event_date" name="event_date" value="{{event.event_date.isoformat}}" required>
+        </div>
+        <div class="col-12">
+            <label for="event_description" class="form-label">Event Description</label>
+            <textarea type="text" class="form-control" id="event_description" name="event_description"
+                required>{{event.event_description}}</textarea>
+        </div>
+        <div class="col-md-6">
+            <label for="event_min_budget" class="form-label">Min Budget</label>
+            <input type="number" class="form-control" id="event_min_budget" name="event_min_budget" value="{{event.event_min_budget}}" required>
+        </div>
+        <div class="col-md-6">
+            <label for="event_max_budget" class="form-label">Max Budget</label>
+            <input type="number" class="form-control" id="event_max_budget" name="event_max_budget" value="{{event.event_max_budget}}" required>
+        </div>
+
+
+
+        <h2>2 Participant List</h2>
+
+        <div class="card shadow p-4">
+            <p>Below, list the participants in your event. Not sure who is participating yet? No problem, just share a link to allow everyone to register.
+                You can rule out undesirable participant pairings later</p>
+            <div class="row participant-input" id="participant-1">
+                <div class="col-5">
+                    <label for="participant_name" class="form-label">Name:</label>
+                </div>
+                <div class="col-5">
+                    <label for="participant_email" class="form-label">Email:</label>
+                </div>
+            </div>
+            <div id="participant-container"> <!-- Container for participant inputs -->
+                {% for participant, ptype in all_participants %}
+                <div class="row participant-input mb-1" id="participant-{{ forloop.counter }}">
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" id="participant_name_{{ forloop.counter }}" name="participant_name_{{ forloop.counter }}"
+                            placeholder="Name.." value="{% if ptype == 'registered' %}{{ participant.user.username }}{% else %}{{ participant.name }}{% endif %}" required>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="email" class="form-control" id="participant_email_{{ forloop.counter }}" name="participant_email_{{ forloop.counter }}"
+                            placeholder="Email.." value="{% if ptype == 'registered' %}{{ participant.user.email }}{% else %}{{ participant.email }}{% endif %}" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="button" class="btn btn-danger" value="Remove" onclick="removeParticipant(this)">
+                    </div>
+                </div>
+                {%endfor%}
+                <input type="hidden" id="part_num" value="{{ all_participants|length }}">
+            </div>
+
+            <div class="col-md-2">
+                <input type="button" class="btn btn-primary" value="Add Participant" onclick="addParticipant()">
+            </div>
+        </div>
+
+        <div class="d-flex flex-row justify-content-center ">
+            <button type="submit" class="btn btn-danger w-50">Update Event</button>
+        </div>
+    </form>
+
+
+</section>
+
+
+{% endblock%}
+
+{%block script%}
+
+
+<script>
+    // Accessing the Django variable in JavaScript
+    let participantCount = document.getElementById('part_num').value;
+
+    function addParticipant() {
+        console.log(participantCount)
+        participantCount = parseInt(participantCount, 10); // Convert the string to an integer
+
+        participantCount++;  // Increment the count for unique IDs
+
+        // Create a new div for the participant input
+        const newParticipant = `
+            <div class="row participant-input mb-1" id="participant-${participantCount}">
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="participant_name_${participantCount}" placeholder="Name.." name="participant_name_${participantCount}"  required>
+                </div>
+                <div class="col-md-5">
+                    <input type="email" class="form-control" id="participant_email_${participantCount}" placeholder="Email.." name="participant_email_${participantCount}" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="button" class="btn btn-danger" value="Remove" onclick="removeParticipant(this)">
+                </div>
+            </div>
+        `;
+
+        // Append the newly created participant input div to the participant container
+        document.getElementById('participant-container').insertAdjacentHTML('beforeend', newParticipant);
+    }
+
+    function removeParticipant(button) {
+        // Remove the participant input section
+        const participantRow = button.closest('.participant-input');
+        participantRow.remove();
+    }
+</script>
+<script>
+    // Automatically show the modal when the page loads if the user is not authenticated
+    document.addEventListener('DOMContentLoaded', function () {
+        var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+        myModal.show();
+    });
+</script>
+{%endblock%}
