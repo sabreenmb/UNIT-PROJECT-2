@@ -96,12 +96,8 @@ def update_event_view(request: HttpRequest, event_id):
         print(existing_participant_emails)
 
         # Remove participants that were not included in the POST data
-        v=current_event.participants.exclude(user__email__in=existing_participant_emails)
-        print(v)
-        v.delete()
-        x=current_event.placeholder_participants.exclude(email__in=existing_participant_emails)
-        print(x)
-        x.delete()
+        current_event.participants.exclude(user__email__in=existing_participant_emails).delete()
+        current_event.placeholder_participants.exclude(email__in=existing_participant_emails).delete()
         return redirect(f"{reverse('events:event_management_view')}?event_id={event_id}")
 
     # Retrieve all participants
@@ -203,8 +199,12 @@ def event_management_view(request:HttpRequest):
                     reverse('events:event_registration_view', args=[current_event.id])
                 )
             )
-        except Exception:
-            redirect()
+        except Http404 as e:
+            return redirect('main:error_view')
+        except Exception as error:
+            messages.error(request,"somthing went wrong please try again later", "alert-danger")
+            return redirect('events:user_events_view')
+
     return render(request, 'events/event_management.html' ,{"event":current_event ,"participants":event_participants,'unconfirmed_participants':unconfirmed_participants, "shareable_link":shareable_link})
 
 def validate_event_view(request:HttpRequest, event_id):
