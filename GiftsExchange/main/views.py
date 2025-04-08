@@ -10,3 +10,4 @@ def home_view(request:HttpRequest):
 
 def error_view(request:HttpRequest):
     return render(request, 'main/error_page.html')
+

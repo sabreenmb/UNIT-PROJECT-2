@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        /* Inline CSS */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #06656E;
+        }
+
+        .email-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+        }
+
+        .header {
+            background-color: #DA8831;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .content {
+
+            padding: 20px;
+        }
+
+        .image {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .footer {
+            background-color: #f0f0f0;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>Welcome to Gifts Circle</h1>
+        </div>
+        <div class="content">
+            <p>Dear Participant,</p>
+            <p>You have been invited to {{event_name}} Event</p>
+            <p>By {{event_organizer.get_full_name}}</p>
+            <p>The gift exchange will take place on {{event_date}}</p>
+            <p>Don't you have an account yet? So, why are you waiting? </p>
+            <div style="text-align: center; margin: 20px 0;">
+                <a href="{{ event_link }}" target="_blank"
+                    style="display: inline-block; padding: 10px 20px; background-color: #F2A7AF; color: #06656E; border-radius: 5px; text-decoration: none;">
+                    Register Now
+                </a>
+            </div>
+            <p>Make sure you do not miss the event by registering before the names are drawn.</p>
+            <p>Do not go away; we will inform you once the event organizer draws the names.</p>
+        </div>
+        <div class="footer">
+            &copy; 2025 All rights reserved for Gifts Circle.
+        </div>
+    </div>
+</body>
+
+</html>

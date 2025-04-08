@@ -21,10 +21,10 @@
         }
 
         .header {
-            background-color: #DA8831;
+            background-color: #932F55;
             color: #ffffff;
             text-align: center;
-            padding: 20px;
+            padding: 10px;
         }
 
         .content {
@@ -49,21 +49,25 @@
 <body>
     <div class="email-container">
         <div class="header">
-            <h1>Welcome to Gifts Circle</h1>
+            <h1>🎉 Happy News 🎉</h1>
         </div>
         <div class="content">
-            <p>Dear Participant, you have been invited to {{event_name}} Event</p>
+            <p>Dear Participant,</p>
+            <p>Tha names have been drawn for {{event_name}} Event</p>
             <p>By {{event_organizer.get_full_name}}</p>
+            <p>Your drawn is</p>
+            <div style="text-align: center; margin: 20px 0; background-color: #F2A7AF; color: #06656E; border-radius: 5px;">
+                🎊{{drawn_name}}🎊
+            </div>
             <p>The gift exchange will take place on {{event_date}}</p>
-            <p>Do you not have an account yet? What are you waiting for?</p>
+            <p>Gift Budget between {{event_min_budget}} - {{event_max_budget}}</p>
+            <h4>do not forget to fill your wishlist. Want to do it right now ?</h4>
             <div style="text-align: center; margin: 20px 0;">
-                <a href="{{ event_link }}" target="_blank"
+                <a href="" target="_blank"
                     style="display: inline-block; padding: 10px 20px; background-color: #F2A7AF; color: #06656E; border-radius: 5px; text-decoration: none;">
-                    Register now
+                    Sign In 
                 </a>
             </div>
-            <p>Make sure you do not miss the event by registering for the event before drawing the names.</p>
-            <p>Do not go away; we will inform you once the event organizer draws the names.</p>
         </div>
         <div class="footer">
             &copy; 2025 All rights reserved for Gifts Circle.
