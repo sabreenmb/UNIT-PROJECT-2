@@ -1,0 +1,23 @@
+{%extends 'main/base.html'%}
+
+{%block content %}
+{% if not request.user.is_authenticated %}
+{%include 'accounts/auth_modal.html'%}
+
+{%else%}
+    {%if event_exists%}
+        {%include 'events/events_list.html'%}
+    {%else%}
+    <section class="main-section">
+        <div class="d-flex flex-column justify-content-center align-items-center gap-3">
+            <h1>you are not participated in any event yet</h1>
+            <a href="{{new_event_url}}" class="btn btn-danger col-4 mx-auto" aria-disabled="true">start an event</a>
+        </div>
+    </section>
+    {% endif %}
+{% endif %}
+
+
+
+
+{% endblock%}

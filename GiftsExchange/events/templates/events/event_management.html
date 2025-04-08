@@ -1,34 +1,35 @@
 {%extends 'main/base.html'%}
 
 {%block content %}{% if not request.user.is_authenticated %}
+{%include 'accounts/auth_modal.html'%}
+
+{%endif%}
+
+{%if event.event_organizer.id != request.user.id%}
 <section>
     <!-- Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="modal fade" id="unathorized" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Authentication Required</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Access Denied</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Please login to access this feature.</p>
+                    <p>You are trying to access an event that you do not own.</p>
+                    <p>Only the event organizer has permission to view this page.</p>
                 </div>
-                <div class="modal-body row">
-                    <a href="{%url 'accounts:sign_in_view'%}" class="btn btn-danger col-4 mx-auto"
-                        aria-disabled="true"><i class="bi bi-person-fill"></i></button>
-                        sign in</a>
-                </div>
+               
             </div>
         </div>
     </div>
 </section>
-
 {%else%}
 
 <section>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
-    <h1>Event > #{{event.id}}</h1>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <h1>My Event > #{{event.id}}</h1>
     <div class="card shadow event_info">
 
         <div class="d-flex flex-column mb-3">
@@ -37,9 +38,8 @@
             <p>{{event.event_date}}</p>
             <p>{{event.event_min_budget}}</p>
             <p>{{event.event_max_budget}}</p>
-            <p>{{event.is_draw}}</p>
-            <a href="{%url 'events:event_management_view'%}" class="btn btn-danger col-4 mx-auto"
-                aria-disabled="true">manage the event</a>
+
+        
         </div>
         <div id="app" class="container">
             <div class="row">
@@ -86,23 +86,37 @@
                 </div>
             </div>
         </div>
+        {% if not event.is_draw %}
+        <div class="container rounded bg-primary text-white my-3 py-2">
+            <div class="row">
+                <div class="col text-center">
+                   <h2>
+                    <i class="bi bi-exclamation-circle"></i>
+                   </h2> 
+                    <p>Use the 'Validate Event' button when all participants have been added to send invitations</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     </div>
-    <div id="copyMessage" class="alert alert-success" style="display: none; position: fixed; top: 20px; left: 50%; width: 90%; transform: translateX(-50%); z-index: 1050;">
+
+    <div id="copyMessage" class="alert alert-success"
+        style="display: none; position: fixed; top: 20px; left: 50%; width: 90%; transform: translateX(-50%); z-index: 1050;">
         Link has been copied!
     </div>
     <h1>manage the event</h1>
 
-    <div
-        class="card shadow p-2 p-md-4 row row-cols-2 row-cols-sm-4 row-cols-md-6 d-flex flex-row justify-content-start align-items-start">
+    <div class="card shadow p-2 p-md-4 row row-cols-5 row-cols-sm-7 row-cols-md-9 d-flex flex-row justify-content-start align-items-start">
         <div class="d-flex flex-column col justify-content-center align-items-center text-center">
-            <a href="#" class="text-dark text-decoration-none">
+            <a  {% if not event.is_draw %} href="{%url 'events:validate_event_view' request.GET.event_id%}?prev={{request.path}}" {%else%} href="#" data-bs-toggle="modal" data-bs-target="#WarningModal " {%endif%} class="text-dark text-decoration-none">
                 <i class="bi bi-check-circle icons mb-3"></i>
                 <h6>Validate the event and send email invitations</h6>
             </a>
         </div>
 
         <div class="d-flex flex-column col justify-content-center align-items-center text-center">
-            <a href="{%url 'events:update_event_view' request.GET.event_id%}?prev={{request.path}}" class="text-dark text-decoration-none">
+            <a href="{%url 'events:update_event_view' request.GET.event_id%}?prev={{request.path}}"
+                class="text-dark text-decoration-none">
                 <i class="bi bi-pencil-square icons"></i>
                 <h6>Modify the event (date, description, etc.)</h6>
             </a>
@@ -115,12 +129,14 @@
         </div>
         <div class="d-flex flex-column col justify-content-center align-items-center text-center">
             <button onclick="copyToClipboard()" class="text-dark text-decoration-none">
-                <input type="text" id="shareableLink" value="{{ shareable_link }}" readonly class="form-control mb-2" style="visibility: hidden; height: 0; position: absolute;" />
+                <input type="text" id="shareableLink" value="{{ shareable_link }}" readonly class="form-control mb-2"
+                    style="visibility: hidden; height: 0; position: absolute;" />
                 <i class="bi bi-share-fill icons"></i>
                 <h6>Share registration link</h6>
             </button>
         </div>
-        <div class="d-flex flex-column col justify-content-center align-items-center text-center">
+        <!-- extra features -->
+        <!-- <div class="d-flex flex-column col justify-content-center align-items-center text-center">
             <a href="#" class="text-dark text-decoration-none">
                 <i class="bi bi-sliders2 icons"></i>
                 <h6>Manage options</h6>
@@ -131,9 +147,9 @@
                 <i class="bi bi-palette-fill icons"></i>
                 <h6>Customize the design</h6>
             </a>
-        </div>
+        </div> -->
         <div class="d-flex flex-column col justify-content-center align-items-center text-center">
-            <a href="#" class="text-dark text-decoration-none">
+            <a href="#" class="text-dark text-decoration-none" data-bs-toggle="modal" data-bs-target="#ConfirmationModal">
                 <i class="bi bi-x-circle icons"></i>
                 <h6>Cancel the Event</h6>
             </a>
@@ -168,7 +184,8 @@
                     <td>
                         <button type="button" data-bs-toggle="modal" data-bs-target="#EditModal"
                             data-bs-whatever="{{ participant.id }}" data-bs-name="{{ participant.name }}"
-                            data-bs-email="{{ participant.email }}" data-bs-event_id={{ request.GET.event_id }}><i class="bi bi-pencil-square"></i></button>
+                            data-bs-email="{{ participant.email }}" data-bs-event_id={{ request.GET.event_id }}><i
+                                class="bi bi-pencil-square"></i></button>
                         <i class="bi bi-x-circle"></i>
                     </td>
                 </tr>
@@ -183,8 +200,46 @@
 </section>
 
 {% endif %}
+  <!-- Modal -->
+  <div class="modal fade" id="ConfirmationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="ConfirmationModalLabel">Cancel Event</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to cancel {{event.event_title}} event?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+          <a href="{% url 'events:event_cancelation_view' event.id %}" class="btn btn-danger">Yes</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-
+  <!-- warning modal -->
+<div class="modal fade" id="WarningModal" tabindex="-1" aria-labelledby="WarningModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="WarningModalLabel">Warning</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Sorry, the names for this event have already been drawn. 
+                All registered participants have received an email, and unregistered participants have been removed.
+                <br><br>
+                If you wish to view the participants or get more information, please contact the event organizer.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- email change modal -->
 <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -198,7 +253,7 @@
                         <label for="participantEmail" class="col-form-label">Email:</label>
                         <input type="email" class="form-control" id="participantEmail">
                         <input type="number" id="participantId">
-                        <input type="number" id="eventId" >
+                        <input type="number" id="eventId">
                     </div>
                 </form>
             </div>
@@ -220,7 +275,7 @@
             const participantName = button.getAttribute('data-bs-name'); // Get participant name
             const participantEmail = button.getAttribute('data-bs-email');
             const eventId = button.getAttribute('data-bs-event_id');
-            
+
             // If necessary, you could initiate an Ajax request here
             // and then do the updating in a callback.
 
@@ -231,8 +286,8 @@
             const idEventInput = editModal.querySelector('#eventId');
             const idInput = editModal.querySelector('#participantId');
 
-            idInput.value=participantId
-            idEventInput.value=eventId
+            idInput.value = participantId
+            idEventInput.value = eventId
 
             emailInput.value = participantEmail; // Set email in input field
             modalTitle.textContent = `Update the email of ${participantName}`
@@ -243,7 +298,7 @@
         function updateParticipant() {
             const currentPath = window.location.pathname;
             const queryString = window.location.search;
-            console.log(currentPath+queryString)
+            console.log(currentPath + queryString)
             const id = document.getElementById('participantId').value;
             const event_id = document.getElementById('eventId').value;
             const email = document.getElementById('participantEmail').value;
@@ -251,14 +306,14 @@
             // Construct the new URL
             const newUrl = `${currentPath}${event_id}/update_participant`;
             // Make an AJAX call to the server to update the participant
-            
+
             $.ajax({
                 url: newUrl, // Your endpoint for updating the participant
                 type: 'POST', // HTTP method
                 data: {
                     id: id,
                     email: email,
-                    csrfmiddlewaretoken: "{{ csrf_token }}"  
+                    csrfmiddlewaretoken: "{{ csrf_token }}"
 
                 },
                 success: function (response) {
@@ -284,9 +339,9 @@
         var copyLink = document.getElementById("shareableLink");
 
         // Use the Clipboard API (modern approach)
-        navigator.clipboard.writeText(copyLink.value).then(function() {
+        navigator.clipboard.writeText(copyLink.value).then(function () {
             showCopyMessage("Link has been copied!");
-        }, function(err) {
+        }, function (err) {
             showCopyMessage("Failed to copy the link.");
         });
 
@@ -299,10 +354,22 @@
         alertDiv.textContent = message; // Set the message text
 
         // Show the message
-        alertDiv.style.display = "block"; 
-        setTimeout(function() {
+        alertDiv.style.display = "block";
+        setTimeout(function () {
             alertDiv.style.display = "none"; // Hide the message after 3 seconds
         }, 3000);
     }
 </script>
+<script>
+    // Automatically show the modal when the page loads if the user is not authenticated
+    document.addEventListener('DOMContentLoaded', function () {
+        var myModal = new bootstrap.Modal(document.getElementById('unathorized'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+        myModal.show();
+    });
+</script>
+
+
 {% endblock%}

@@ -1,28 +1,7 @@
 {%extends 'main/base.html'%}
 
 {%block content %}{% if not request.user.is_authenticated %}
-<section>
-    <!-- Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Authentication Required</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Please login to access this feature.</p>
-                </div>
-                <div class="modal-body row">
-                    <a href="{%url 'accounts:sign_in_view'%}" class="btn btn-danger col-4 mx-auto"
-                        aria-disabled="true"><i class="bi bi-person-fill"></i></button>
-                        sign in</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+{%include 'accounts/auth_modal.html'%}
 
 {% endif %}
 
@@ -61,7 +40,7 @@
         <div class="card shadow p-4">
             <p>Below, list the participants in your event. Not sure who is participating yet? No problem, just share a link to allow everyone to register.
                 You can rule out undesirable participant pairings later</p>
-            <div class="row participant-input" id="participant-1">
+            <div class="row participant-input" id="participant">
                 <div class="col-5">
                     <label for="participant_name" class="form-label">Name:</label>
                 </div>
@@ -106,7 +85,7 @@
 
 {%block script%}
 
-
+<!-- 
 <script>
     // Accessing the Django variable in JavaScript
     let participantCount = document.getElementById('part_num').value;
@@ -141,15 +120,74 @@
         const participantRow = button.closest('.participant-input');
         participantRow.remove();
     }
-</script>
+</script> -->
 <script>
-    // Automatically show the modal when the page loads if the user is not authenticated
-    document.addEventListener('DOMContentLoaded', function () {
-        var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
-            backdrop: 'static',
-            keyboard: false
-        });
-        myModal.show();
+    // Initialize participant count based on the existing number of participants, or set default to 0
+    let participantCount = parseInt(document.getElementById('part_num').value, 10) || 0;
+
+    function addParticipant() {
+        console.log(participantCount)
+        // Increment the count for unique IDs
+        participantCount++;
+        console.log(participantCount)
+
+
+        // Create a new div for the participant input
+        const newParticipant = `
+            <div class="row participant-input mb-1" id="participant-${participantCount}">
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="participant_name_${participantCount}" placeholder="Name.." name="participant_name_${participantCount}"  required>
+                </div>
+                <div class="col-md-5">
+                    <input type="email" class="form-control" id="participant_email_${participantCount}" placeholder="Email.." name="participant_email_${participantCount}" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="button" class="btn btn-danger" value="Remove" onclick="removeParticipant(this)">
+                </div>
+            </div>
+        `;
+
+        // Append the newly created participant input div to the participant container
+        document.getElementById('participant-container').insertAdjacentHTML('beforeend', newParticipant);
+    }
+
+    function removeParticipant(button) {
+        // Remove the participant input section
+        const participantRow = button.closest('.participant-input');
+        console.log(participantRow)
+        participantRow.remove();
+
+        // Update participant count by decrementing
+        participantCount--;
+        console.log(participantCount)
+
+        // Optional: Update the IDs of remaining participants if needed
+        updateParticipantIds();
+    }
+    function updateParticipantIds() {
+    const participants = document.querySelectorAll('.participant-input');
+    participants.forEach((participant, index) => {
+        // Update the ID for the participant container
+        participant.id = `participant-${index + 1}`;
+
+        // Find the text input for the participant's name
+        const textInput = participant.querySelector('input[type="text"]');
+        if (textInput) {
+            textInput.id = `participant_name_${index + 1}`;
+            textInput.name = `participant_name_${index + 1}`;
+        }
+
+        // Find the email input for the participant
+        const emailInput = participant.querySelector('input[type="email"]');
+        if (emailInput) {
+            emailInput.id = `participant_email_${index + 1}`;
+            emailInput.name = `participant_email_${index + 1}`;
+        }
     });
+
+    // Update the participant count display if necessary
+    document.getElementById('part_num').value = participants.length; // Update the participant count
+}
 </script>
+
 {%endblock%}

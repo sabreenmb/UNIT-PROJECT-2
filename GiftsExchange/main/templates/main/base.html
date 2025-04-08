@@ -14,20 +14,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-    
-<!-- Bootstrap JS and dependencies
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js"></script> -->
+
 
 </head>
 
 {%url 'main:home_view' as home_url %}
 {%url 'events:create_event_view' as new_event_url %}
 {%url 'events:user_events_view' as events_url %}
+{%url 'events:current_user_participations_view' as user_participations_url %}
 
-<body>
-    <header class="container-fuild fixid-top px-5">
+<body class="w-100">
+    <header class="container-fluid fixid-top px-5 mb-3">
         <nav class="navbar navbar-expand-md ">
             <div class="container-fluid">
                 <a class="navbar-brand" href={{home_url}}>Gifts Exchange</a>
@@ -42,13 +39,13 @@
                                 href="{{home_url}}">Home</a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link" href="{{new_event_url}}">Start New Event</a>
+                            <a class="nav-link {%if request.path == new_event_url%}active{%endif%}" href="{{new_event_url}}">Start New Event</a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link" href="{{events_url}}">My Events</a>
+                            <a class="nav-link {%if request.path == events_url%}active{%endif%}" href="{{events_url}}">My Events</a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link" href="#">Participation</a>
+                            <a class="nav-link {%if request.path == user_participations_url%}active{%endif%}" href="{{user_participations_url}}">Participation</a>
                         </li>
                         {%if request.user.is_authenticated%}
                         <li class="nav-item ">
@@ -71,13 +68,14 @@
                         </li>
                         {%else%}
                         <li class="nav-item ">
-                            <a href="{%url 'accounts:sign_in_view'%}" class="btn btn-outline-danger"
-                                aria-disabled="true"><i class="bi bi-person-fill"></i></button>
+                            <a href="{%url 'accounts:sign_in_view'%}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}"
+                                class="btn btn-outline-danger" aria-disabled="true"><i
+                                    class="bi bi-person-fill"></i></button>
                                 sign in</a>
                         </li>
                         <li class="nav-item ">
-                            <a href="{%url 'accounts:sign_up_view'%}" class="btn btn-danger" aria-disabled="true"><i
-                                    class="bi bi-person-fill"></i></button>
+                            <a href="{%url 'accounts:sign_up_view'%}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}"
+                                class="btn btn-danger" aria-disabled="true"><i class="bi bi-person-fill"></i></button>
                                 sign up</a>
                         </li>
 
@@ -89,15 +87,27 @@
 
     </header>
     <main class="px-5">
-
-        {%if messages%}
-        {%for msg in messages%}
-        <div class="alert {{msg.tags}} alert-dismissible fade show" role="alert">
-            {{msg}}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div id="alertsContainer">
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="alert {{ msg.tags }} alert-dismissible fade show mt-4" role="alert" style="display: none;">
+                        <p>{{ msg }}</p>
+                        <button type="button" class="btn-close" aria-label="Close" onclick="hideAlert(this.parentElement)"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
         </div>
-        {%endfor%}
-        {%endif%}
+
+        <!-- {%if messages%}
+            {%for msg in messages%}
+            <h1>{{msg}}</h1>
+            <div id="copyAlert" class="alert {{msg.tags}} alert-dismissible fade show" role="alert">
+                <p id="alertMessage">{{msg}}</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+                    onclick="hideCopyMessage()"></button>
+            </div>
+            {%endfor%}
+        {%endif%} -->
         {%block content%}
 
         {%endblock%}
@@ -114,7 +124,49 @@
         <p class="text-center text-body-secondary">&copy; 2025 All right reserved</p>
 
     </footer>
+
+<script>
+    // Function to show all alerts in sequence
+    function showAlerts() {
+        const alerts = document.querySelectorAll('.alert');
+        if (alerts.length === 0) return; // Exit if no alerts exist
+
+        let currentAlertIndex = 0;
+
+        function displayNextAlert() {
+            // Hide all alerts
+            alerts.forEach(alert => alert.style.display = 'none');
+
+            if (currentAlertIndex < alerts.length) {
+                // Show the current alert
+                alerts[currentAlertIndex].style.display = 'block';
+
+                // Automatically hide the alert after 4 seconds
+                setTimeout(() => {
+                    hideAlert(alerts[currentAlertIndex]); // Hide the current alert
+                    currentAlertIndex++; // Move to the next alert
+                    displayNextAlert(); // Show the next alert
+                }, 4000); // Adjust the duration as needed
+            }
+        }
+
+        displayNextAlert(); // Start displaying alerts
+    }
+
+    function hideAlert(alert) {
+        alert.style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        showAlerts(); // Call the function to show alerts when the page loads
+    });
+</script>
+
+
+
+
     {%block script%}
+
     {%endblock%}
 </body>
 

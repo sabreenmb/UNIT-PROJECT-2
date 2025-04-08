@@ -7,3 +7,6 @@ from django.http import HttpRequest, HttpResponse
 
 def home_view(request:HttpRequest):
     return render(request, 'main/base.html')
+
+def error_view(request:HttpRequest):
+    return render(request, 'main/error_page.html')

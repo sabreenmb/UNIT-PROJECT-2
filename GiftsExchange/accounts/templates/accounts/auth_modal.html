@@ -1,0 +1,44 @@
+<html>
+
+<head></head>
+
+<body>
+
+    <section>
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Authentication Required</h1>
+                    </div>
+                    <div class="modal-body">
+                        <p>Please login to access this feature.</p>
+                    </div>
+                    <div class="modal-body row mx-auto">
+                        <a href="{%url 'accounts:sign_in_view'%}" class="btn btn-danger col-auto me-1"
+                            aria-disabled="true"><i class="bi bi-person-fill"></i>
+                            Sign in</a>
+                        <a href="{%url 'main:home_view'%}" class="btn btn-danger col-auto "
+                            aria-disabled="true"><i class="bi bi-house-fill"></i>
+                           Back to the home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        // Automatically show the modal when the page loads if the user is not authenticated
+        document.addEventListener('DOMContentLoaded', function () {
+            var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            myModal.show();
+        });
+    </script>
+
+</body>
+
+</html>

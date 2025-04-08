@@ -5,7 +5,7 @@
     <section class="main-section row d-flex justify-content-center">
         <div class='col-10 col-md-6 card-custom d-flex flex-column justify-content-center align-items-center py-2'>
             <h3>Sign in</h3>
-            <form class="d-flex flex-column row-gap-2 px-2 w-100 " action="{%url 'accounts:sign_in_view'%}" method="POST">
+            <form class="d-flex flex-column row-gap-2 px-2 w-100 " action="{% url 'accounts:sign_in_view' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}"  method="POST">
                 {% csrf_token %}
                 <div class="form-floating">
                     <input type="text" name="username" class="form-control" id="inputUsername" placeholder="Username" required >

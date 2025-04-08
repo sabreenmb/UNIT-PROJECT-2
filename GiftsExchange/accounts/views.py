@@ -5,19 +5,20 @@ from django.contrib.auth import authenticate,login ,logout
 from django.contrib import messages
 from django.db import IntegrityError,transaction
 from .models import Profile
-# Create your views here.
 
 def sign_up_view(request:HttpRequest):
     if request.method =='POST':
         try:
             with transaction.atomic():
-                new_user=User.objects.create_user(username=request.POST['username'],password=request.POST['password'], email=request.POST['email'], first_name=request.POST['first_name'], last_name=request.POST['last_name'])
+                new_user=User.objects.create_user(username=request.POST['username'],password=request.POST['password'], email=request.POST['email'].lower(), first_name=request.POST['first_name'], last_name=request.POST['last_name'])
                 new_user.save()
                 profile:Profile=Profile(user=new_user)
                 profile.save()
+                login(request,new_user)
 
             messages.success(request, "Registered User Successfuly","alert-success")
-            return redirect('accounts:sign_in_view')
+            return redirect(request.GET.get('next', 'main:home_view'))  # Redirect to next URL or home
+
         
         except IntegrityError as e :
             messages.error(request, "Please try another username. This username already in use","alert-danger")
@@ -35,8 +36,10 @@ def sign_in_view(request:HttpRequest):
             if user :
                 #login the user
                 login(request,user)
+
                 messages.success(request, "Logged in Successfuly","alert-success")
-                return redirect('main:home_view')
+                print(request.GET)
+                return redirect(request.GET.get('next', 'main:home_view'))  # Redirect to next URL or home
             else:
                 messages.error(request, "Please try again. Your credentials are wrong.","alert-danger")
         except Exception as e:
