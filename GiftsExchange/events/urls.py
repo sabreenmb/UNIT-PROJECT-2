@@ -7,6 +7,7 @@ urlpatterns=[
     path('create/',views.create_event_view,name='create_event_view'),
     path('my_events/',views.user_events_view,name='user_events_view'),
     path('participations/',views.current_user_participations_view,name='current_user_participations_view'),
+    path('participations/event-<event_id>',views.participant_area_view,name='participant_area_view'),
     path('event_management/',views.event_management_view,name='event_management_view'),
     path('event_management/<event_id>/update_participant/',views.update_participant_view,name='update_participant_view'),   
     path('event_management/registration/<int:event_id>/',views.event_registration_view, name='event_registration_view'),

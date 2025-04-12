@@ -6,8 +6,27 @@
 
 {%else%}
     {%if event_exists%}
-        {%include 'events/events_list.html'%}
-    {%else%}
+    <section class="main-section">
+
+        {%for event in events%}
+        <div class="d-flex flex-column mb-3">
+            <div class="card shadow">
+                <p>{{event.event_organizer}}</p>
+                <p>{{event.event_title}}</p>
+                <p>{{event.event_date}}</p>
+                <p>{{event.event_min_budget}}</p>
+                <p>{{event.event_max_budget}}</p>
+                <a href="{%url 'events:participant_area_view' event.id %}" >
+                    <input type="hidden" name="event_id" value="{{event.id}}">
+                    <button type="button" class="btn btn-danger col-4 mx-auto" aria-disabled="true">Open participant_area</button>
+                </a>                
+               
+            </div>
+        </div>
+
+
+        {%endfor%}
+    </section>    {%else%}
     <section class="main-section">
         <div class="d-flex flex-column justify-content-center align-items-center gap-3">
             <h1>you are not participated in any event yet</h1>

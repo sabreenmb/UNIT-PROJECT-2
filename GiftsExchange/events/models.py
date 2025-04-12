@@ -1,5 +1,6 @@
 import random
 from django.db import models
+from wishList.models import Item
 from accounts.models import User
 # Create your models here.
 
@@ -61,17 +62,8 @@ class PlaceholderParticipant(models.Model):
 class EventParticipant(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='participants')  # Each event can have multiple participants
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='participants',default=None)  # A user can participate in multiple events
-    wishlist = models.JSONField(default=list)  # Store wishlist as a list instead of a dictionary
+    wishlist = models.ManyToManyField(Item, blank=True , )  # Linking to Item model
     drawn_name = models.ForeignKey(User, on_delete=models.CASCADE, related_name='drawn_names', null=True, blank=True)  # Nullable field to store the drawn name
     def __str__(self):
-        return f"{self.user.username} in {self.event.event_title} {self.wishlist}"
-    
-
-# class DrawResult(models.Model):
-#     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='draw_results')
-#     result_data = models.JSONField(default=dict)  # Store draw results as a JSON field
-
-#     def __str__(self):
-#         return f"Draw Results for {self.event.event_title}"
-
+        return f"{self.user.username} in {self.event.event_title} {list(self.wishlist.values_list('name', flat=True))}"
 

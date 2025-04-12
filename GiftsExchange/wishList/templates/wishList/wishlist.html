@@ -1,0 +1,260 @@
+{%extends 'main/event_base.html'%}
+
+{%block content %}
+{% if not request.user.is_authenticated %}
+{%include 'accounts/auth_modal.html'%}
+
+{%else%}
+<style>
+    .input-container {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+        display: none; /* Hidden by default */
+    }
+    .input-field {
+        flex: 1;
+        border: 1px solid #007bff;
+        border-radius: 20px;
+        padding: 10px;
+        margin-left: 10px;
+    }
+    .action-icon {
+        cursor: pointer;
+    }
+</style>
+<section class="main-section row d-flex justify-content-between w-100">
+    <div class="col-sm-10 col-md-7 d-flex flex-column justify-content-start">
+        <div class="w-100 p-4" style="background-color: red;">
+        </div>
+
+    </div>
+
+    <div class='col-sm-10 col-md-4 d-flex flex-column py-2'>
+
+        <!-- Header with Toggle -->
+        <div class="w-100" style="background-color: blueviolet;">
+            <a class="d-flex flex-column justify-content-center align-items-center" 
+
+               style="background-color: bisque; text-decoration: none; padding: 10px;">
+                <p>{{event.event_title}} test</p>
+                <p>gifts</p>
+            </a>
+        </div>
+    
+        <!-- Collapsable Content -->
+        <div id="wishlist-container">
+            <div class="p-4">
+                {% if wishItems %}
+                    {% for item in wishItems %}
+                    <div class="row item-input mb-1" id="item-{{ forloop.counter }}">
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" id="item_name_{{ forloop.counter }}"
+                                   name="item_name_{{ forloop.counter }}" placeholder="" value="test" required>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="email" class="form-control" id="participant_email_{{ forloop.counter }}"
+                                   name="participant_email_{{ forloop.counter }}" placeholder="Email.." value="" required>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="button" class="btn btn-danger" value="Remove" onclick="removeItem(this)">
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <input type="hidden" id="items_num" value="{{ wishItems|length }}">
+                {% else %}
+                    <div class="card w-100 d-flex flex-row justify-content-center align-items-center my-3">
+                        <h6>No gifts requested yet</h6>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col px-4">
+
+                <div class="d-flex flex-row justify-content-start w-100 mx-2">
+                    <div class="action-icon btn btn-danger ">
+                        <i class="bi bi-bag-plus-fill" onclick="toggleInput()"></i>
+                    </div>
+                    <div class="input-container" id="inputContainer">
+                        <form action="{%url 'wishList:save_item_view' event.id %}" method="post" enctype="multipart/form-data" class="d-flex flex-row">
+                            {%csrf_token%}
+                            <input type="text" class="form-control" id="inputText" name='gift_name' onkeyup="checkInput(event)" required>
+                            <!-- <button class="btn btn-primary" onclick="document.getElementById('imageInput').click();">
+                                <i class="bi bi-image"></i>
+                                <input type="file" class="d-none" id="imageInput" accept="image/*"
+                                    onchange="displayImage()">
+                            </button> -->
+                            
+                        </form>
+                     
+                    </div>
+                </div>
+                <div id="output" class="mt-3"></div>
+
+                <!-- <button class="btn btn-danger" onclick="addItem()">
+                    <i class="bi bi-bag-plus-fill"></i> 
+                </button> -->
+            </div>
+        </div>
+    </div>
+    <!-- <div class='col-sm-10 col-md-4 d-flex flex-column justify-content-start align-items-center py-2'>
+        <div class="w-100 " style="background-color: blueviolet;">
+            <div class="d-flex flex-column justify-content-center align-items-center" style="background-color: bisque;">
+                <p>{{event.event_title}} test</p>
+                <p>gifts</p>
+            </div>
+            <div id="wishlist-container p-4" >
+                
+                {%if wishItems %}
+                {% for item in wishItems %}
+                <div class="row item-input mb-1" id="item-{{ forloop.counter }}">
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" id="participant_name_{{ forloop.counter }}"
+                            name="participant_name_{{ forloop.counter }}" placeholder="Name.." value="test" required>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="email" class="form-control" id="participant_email_{{ forloop.counter }}"
+                            name="participant_email_{{ forloop.counter }}" placeholder="Email.."
+                            value=""
+                            required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="button" class="btn btn-danger" value="Remove" onclick="removeItem(this)">
+                    </div>
+                </div>
+                {%endfor%}
+                <input type="hidden" id="items_num" value="{{ wishItems|length }}">
+
+                {%else%}
+                <div class="card w-100 d-flex flex-row justify-content-center align-items-center my-3">
+                    <h6>No gifts requested yet</h6>
+                </div>
+                {%endif%}
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-danger" onclick="addItem()">
+                    <i class="bi bi-bag-plus-fill"></i> 
+                </button>
+            </div>
+        </div>
+
+
+    </div> -->
+</section>
+
+<script>
+    // Initialize participant count based on the existing number of participants, or set default to 0
+    let itemsCount = parseInt(document.getElementById('items_num').value, 10) || 0;
+
+    function addItem() {
+        console.log(itemsCount)
+        // Increment the count for unique IDs
+        itemsCount++;
+        console.log(itemsCount)
+
+
+        // Create a new div for the participant input
+        const newItem = `
+            <div class="row participant-input mb-1" id="participant-${participantCount}">
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="participant_name_${participantCount}" placeholder="Name.." name="participant_name_${participantCount}"  required>
+                </div>
+                <div class="col-md-5">
+                    <input type="email" class="form-control" id="participant_email_${participantCount}" placeholder="Email.." name="participant_email_${participantCount}" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="button" class="btn btn-danger" value="Remove" onclick="removeParticipant(this)">
+                </div>
+            </div>
+        `;
+
+        document.getElementById('wishlist-container').insertAdjacentHTML('beforeend', newItem);
+    }
+
+    function removeParticipant(button) {
+        // Remove the participant input section
+        const participantRow = button.closest('.participant-input');
+        console.log(participantRow)
+        participantRow.remove();
+
+        // Update participant count by decrementing
+        participantCount--;
+        console.log(participantCount)
+
+        // Optional: Update the IDs of remaining participants if needed
+        updateParticipantIds();
+    }
+    function updateParticipantIds() {
+        const participants = document.querySelectorAll('.participant-input');
+        participants.forEach((participant, index) => {
+            // Update the ID for the participant container
+            participant.id = `participant-${index + 1}`;
+
+            // Find the text input for the participant's name
+            const textInput = participant.querySelector('input[type="text"]');
+            if (textInput) {
+                textInput.id = `participant_name_${index + 1}`;
+                textInput.name = `participant_name_${index + 1}`;
+            }
+
+            // Find the email input for the participant
+            const emailInput = participant.querySelector('input[type="email"]');
+            if (emailInput) {
+                emailInput.id = `participant_email_${index + 1}`;
+                emailInput.name = `participant_email_${index + 1}`;
+            }
+        });
+
+        // Update the participant count display if necessary
+        document.getElementById('part_num').value = participants.length; // Update the participant count
+    }
+</script>
+
+<script>
+    function toggleInput() {
+        const inputContainer = document.getElementById('inputContainer');
+        inputContainer.style.display = inputContainer.style.display === 'flex' ? 'none' : 'flex';
+        document.getElementById('inputText').value = ''; // Clear the input when toggled
+        document.getElementById('inputText').focus(); // Focus on the input when opened
+    }
+
+    function checkInput(event) {
+        const inputField = document.getElementById('inputText');
+        if (event.key === 'Enter' && inputField.value ) {
+            toggleInput();
+        }
+    }
+
+    function saveInput() {
+        const inputText = document.getElementById('inputText').value;
+
+        if (inputText || imageFile) {
+            const displayText = inputText ? inputText : '';
+            outputDiv.innerHTML += `<div class="alert alert-info mt-2">${displayText}</div>`;
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    outputDiv.innerHTML += `<img src="${e.target.result}" class="img-fluid mt-2" style="max-width: 100%;">`;
+                };
+                reader.readAsDataURL(imageFile);
+            }
+            document.getElementById('inputText').value = ''; // Clear text input
+            document.getElementById('imageInput').value = ''; // Clear image input
+        }
+        document.getElementById('inputContainer').style.display = 'none'; // Close input field
+    }
+
+    function displayImage() {
+        const imageFile = document.getElementById('imageInput').files[0];
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML += `<img src="${e.target.result}" class="img-fluid mt-2" style="max-width: 100%;">`;
+        };
+        if (imageFile) {
+            reader.readAsDataURL(imageFile);
+        }
+    }
+</script>
+
+{%endif%}
+{%endblock%}

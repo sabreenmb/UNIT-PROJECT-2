@@ -47,8 +47,6 @@ def create_event_view(request:HttpRequest):
                 # If any field is not present, stop checking for more participants
                 break
 
-        # After processing all participants, redirect or render a response
-        # add_participant(new_event.id, user.id)
         return redirect('events:user_events_view')
     
     return render(request, 'events/create_event.html')
@@ -111,60 +109,6 @@ def update_event_view(request: HttpRequest, event_id):
         "all_participants": all_participants,
     })
 
-# def update_event_view(request:HttpRequest,event_id):
-#     current_event= Event.objects.get(pk=event_id)
-
-#     if request.method == 'POST':
-#         user= request.user
-#         current_event.event_organizer=user
-#         current_event.event_title=request.POST['event_title']
-#         current_event.event_date=request.POST['event_date']
-#         current_event.event_description=request.POST['event_description'] 
-#         current_event.event_min_budget =request.POST['event_min_budget']
-#         current_event.event_max_budget=request.POST['event_max_budget']
-#         current_event.save()
-
-#         participant_count = 0
-#         participants = []
-#         # Loop through dynamically created participant fields
-#         while True:
-#             participant_name = request.POST.get(f'participant_name_{participant_count + 1}')
-#             participant_email = request.POST.get(f'participant_email_{participant_count + 1}')
-
-#         #     print(f'email {participant_email}')
-#         #     if participant_name and participant_email:
-#         #         # If both fields are present, it means this participant should be processed
-#         #         try:
-#         #             existing_user = User.objects.get(email__iexact=participant_email)
-#         #             print(existing_user)
-#         #             # Create a Participant entry if the user exists
-#         #             EventParticipant.objects.create(event=current_event, user=existing_user)
-#         #         except User.DoesNotExist:
-#         #             # Create a PlaceholderParticipant if the user does not exist
-#         #             PlaceholderParticipant.objects.create(event=current_event, name=participant_name, email=participant_email)
-                
-#         #         participants.append({'name': participant_name, 'email': participant_email})
-#         #         participant_count += 1
-#         #     else:
-#         #         # If any field is not present, stop checking for more participants
-#         #         break
-
-#         # After processing all participants, redirect or render a response
-#         # add_participant(new_event.id, user.id)
-#         return redirect('events:user_events_view')
-
-#         # Initialize a participant counter
-
-#     # Retrieve all participants and tag their type
-#     participants = [(part, 'registered') for part in current_event.participants.all()]  # Event Participants
-#     placeholder_participants = [(part, 'unregistered') for part in current_event.placeholder_participants.all()]  # Placeholder Participants
-    
-#     # Combine the two lists
-#     all_participants = participants + placeholder_participants
-#     print(all_participants)
-
-    
-#     return render(request, 'events/update_event.html', {"event":current_event ,"all_participants":all_participants})
 def current_user_participations_view(request:HttpRequest):
     
     if not request.user.is_authenticated:
@@ -175,14 +119,12 @@ def current_user_participations_view(request:HttpRequest):
 
     return render(request, 'events/events_participations.html' ,{"events":reversed(events),'event_exists': event_exists})
 
-
 def user_events_view(request:HttpRequest):
     user= request.user
     user_events=Event.objects.filter(event_organizer=user.id)
     event_exists = user_events.exists()  # This returns True or False
 
     return render(request, 'events/user_events.html' ,{"events":reversed(user_events) , 'event_exists': event_exists})
-
 
 def event_management_view(request:HttpRequest):
     if request.GET['event_id']:
@@ -247,8 +189,6 @@ def validate_event_view(request:HttpRequest, event_id):
 
         return redirect(f"{reverse('events:event_management_view')}?event_id={event_id}")
 
-
-
 @login_required(login_url='accounts:sign_in_view')
 def event_registration_view(request, event_id):
     try:
@@ -274,7 +214,7 @@ def event_registration_view(request, event_id):
         messages.error(request, "Failed to register you for the event. Please try again." ,"alert-danger")
     return redirect("main:home_view")
 
-@csrf_exempt  # Use this decorator if you are not handling CSRF tokens for AJAX calls
+@csrf_exempt 
 def update_participant_view(request:HttpRequest,event_id):
 
     if request.method == 'POST':
@@ -289,7 +229,7 @@ def update_participant_view(request:HttpRequest,event_id):
             participant=current_event.placeholder_participants.get(id=participant_id)         
             # Update participant details
             participant.email = participant_email
-            participant.save()  # Save changes
+            participant.save() 
 
             return JsonResponse({'message': 'Participant updated successfully!'}, status=200)
 
@@ -299,7 +239,6 @@ def update_participant_view(request:HttpRequest,event_id):
         return JsonResponse({'error': 'Invalid request method!'}, status=400)
 
 def draw_participants_view(request:HttpRequest, event_id):
-
     try:
         event = get_object_or_404(Event, id=event_id)
         # Check if drawing was done
@@ -310,8 +249,22 @@ def draw_participants_view(request:HttpRequest, event_id):
             if len(event.participants.all())<3:
                 messages.error(request,"Not enough participants to draw!. at least invite 3 participants to start the draw", "alert-danger")
             else:
+
                 event.draw_participants()  # Perform draw ensuring no self-selection
-                messages.success(request,"the names has been drawn sucssefuly. and the participants notified throw the email", "alert-sucsses")
+                messages.success(request,"the names has been drawn sucssefuly. ", "alert-sucsses")
+                # Send emails to participants
+                for participant in event.participants.all():
+                    try:
+                        # Send email 
+                        draw_notification_email(event, participant)
+                        print(type(participant))
+
+                    except Exception as email_error:
+                        # Log the error and notify the user about the failed email
+                        print(f"Error sending email to {participant.user.email}: {email_error}")
+                        messages.error(request, f"Could not send email to {participant.user.email}.", "alert-warning")
+        
+
 
         # Get the drawn names
         # drawn_names = event.get_drawn_names()
@@ -319,6 +272,7 @@ def draw_participants_view(request:HttpRequest, event_id):
     except Http404 as e:
         return redirect('main:error_view')
     except Exception as error:
+        print('new err',error)
         messages.error(request,"Could not draw names please try again later", "alert-danger")
     return redirect(f"{reverse('events:event_management_view')}?event_id={event_id}")
 
@@ -331,11 +285,16 @@ def event_cancelation_view(request:HttpRequest, event_id):
     except Http404:
         return redirect('main:error_view')
 
-def add_participant(event_id,user_id):
-    event= Event.objects.get(pk=event_id)
-    user=User.objects.get(pk=user_id)
-    Participant =EventParticipant(event =event,user=user)
-    Participant.save()
+def participant_area_view(request:HttpRequest,event_id):
+    try:
+        current_event= get_object_or_404(Event, pk=event_id)
+        current_participant=current_event.participants.get(user=request.user)
+    except Http404:
+        redirect("main:error_view")
+    except Exception as error:
+        messages.error(request,'test','alert-danger')
+
+    return render(request, "events/participant_area.html",{"event":current_event, "user":current_participant} )
 
 def invitation_email(emails:list, event:Event,shareable_link):
     context = {
@@ -352,6 +311,24 @@ def invitation_email(emails:list, event:Event,shareable_link):
     email_msg=EmailMessage('Invitation',content_html, settings.EMAIL_HOST_USER,emails)
     email_msg.content_subtype='html'
     email_msg.send()
-    return redirect("main:home_view")
+    # TODO 
+    # return redirect("main:home_view")
 
+def draw_notification_email(event:Event,participant):
+
+    context = {
+        "event_name": event.event_title,
+        "event_organizer": event.event_organizer,
+        "event_date": event.event_date,
+        "event_min_budget": event.event_min_budget,
+        "event_max_budget": event.event_max_budget,
+        "drawn_name":participant.drawn_name.get_full_name
+    }
+    content_html=render_to_string('main/mail/draw_notification_email.html' , context=context)
+    # content_html="this is an email to confirm your registeration"
+    send_to= participant.user.email
+    # send_to='sabreenbinsalman@hotmail.com'
+    email_msg=EmailMessage('Good News',content_html, settings.EMAIL_HOST_USER,[send_to])
+    email_msg.content_subtype='html'
+    email_msg.send()
 

@@ -1,0 +1,91 @@
+{%extends 'main/event_base.html'%}
+
+{%block content %}
+{% if not request.user.is_authenticated %}
+{%include 'accounts/auth_modal.html'%}
+
+{%else%}
+<section class=" row d-flex justify-content-center">
+        <div class="col-10 col-md-9 d-flex flex-column justify-content-center gap-3 mb-3 ">
+
+            <div class="card shadow d-flex flex-column justify-content-center align-items-center">
+                <h1>{{event.event_title}}</h1>
+            </div>
+            <div class="card shadow">
+                <div class="d-flex flex-column justify-content-center align-items-center py-3">
+
+                    <h3>welcome {{request.user.first_name}}</h3>
+                    <h5>Congrats, your draw has been started!</h5>
+                    <a href="{%url 'events:participant_area_view' event.id %}" class="btn btn-danger">
+                        View {{user.drawn_name.get_full_name}} Wishlist
+                    </a>
+                </div>
+
+
+
+            </div>
+            <p>If you encauntered any prop;ems or have enqueries contact the event orgnizer
+                {{event.event_organizer.email}}</p>
+
+
+            <div class="row row-cols-1 row-cols-sm-2  ">
+
+                <div class=" card shadow" style="height: 100px;">
+
+                    <h1>downtime</h1>
+                    <p>{{event.event_date}}</p>
+
+
+                </div>
+                <div class=" card shadow" style="height: 100px;">
+
+                    <h1>budget</h1>
+                    <p>{{event.event_min_budget}} - {{event.event_max_budget}}</p>
+                    \
+                </div>
+            </div>
+            <div class="d-flex flex-row justify-content-center ">
+                <h1>Draws and wishlist status</h1>
+            
+                <a href=""><i class="bi bi-bag-heart"></i></a>
+            </div>
+            <div class="card shadow ">
+
+                <div class="table-responsive-sm card shadow participants px-4">
+                    <table class="table ">
+                        <thead>
+                            <tr class="row">
+                                <th class="col-3 text-center">Participant</th>
+                                <th class="col-8 text-center">Wishlist</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for participant in event.participants.all%}
+                            <tr class="row">
+                                <th class="col-3 text-center">{{participant.user.get_full_name}}</th>
+                                <th class="col-8 text-end">{{ participant.wishlist }}</th>
+                            </tr>
+
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+
+</section>
+
+
+<!-- <section class="main-section">
+    <div class="d-flex flex-column justify-content-center align-items-center gap-3">
+        <h1>you are not participated in any event yet</h1>
+        <a href="{{new_event_url}}" class="btn btn-danger col-4 mx-auto" aria-disabled="true">start an event</a>
+    </div>
+</section> -->
+
+
+{%endif%}
+{%endblock%}
