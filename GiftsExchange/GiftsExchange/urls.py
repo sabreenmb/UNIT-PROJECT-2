@@ -23,7 +23,7 @@ urlpatterns = [
     path('', include('main.urls')),
     path('accounts/',include('accounts.urls')),
     path('events/',include('events.urls')),
-    path('wishList/',include('wishList.urls'))
+    path('wishList/',include('wishList.urls')),
 
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
