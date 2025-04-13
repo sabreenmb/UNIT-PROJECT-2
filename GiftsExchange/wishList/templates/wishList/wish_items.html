@@ -1,0 +1,47 @@
+<html>
+
+<head></head>
+
+<body>
+    <div class="w-100">
+        <a class="d-flex flex-column justify-content-center align-items-center"
+            style="background-color:#c90168 ; text-decoration: none; padding: 10px 15px; border-radius: 15PX;">
+            <h5 class="white-title item-input text-center">{{event.event_title}} test</h5>
+            <p class="white-title ">{{wishItems.count}} Gifts</p>
+        </a>
+    </div>
+
+    <div id="wishlist-container">
+        <div class="p-2 ">
+            {% if wishItems %}
+            {% for item in wishItems %}
+            <div class="container-fluid  card shadow p-2 mb-1 item-input ">
+                <div class="d-flex justify-content-between a w-100">
+
+                    <div class="d-flex align-items-center gap-3  item-input"> <!-- Keep flex-grow-1 for expansion -->
+                        <i class="bi bi-gift orange-title"></i>
+                        <p class="mb-0 title">{{ item.name }}
+                        <p>
+                    </div>
+                    <div class="d-flex justify-content-end align-self-start"> <!-- Button on the right -->
+                        <a href="{% url 'wishList:remove_item_view' event.id item.id %}" class="pink-title"
+                            title="Remove Item">
+                            <i class="bi bi-x-circle"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <input type="hidden" id="items_num" value="{{ wishItems|length }}">
+            {% else %}
+            <div class="card w-100 d-flex flex-row justify-content-center align-items-center my-3">
+                <h6 class="pink-title p-2">No gifts requested yet</h6>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+</body>
+
+</html>

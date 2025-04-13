@@ -2,16 +2,14 @@
 
 {%block content %}
 
-<section class="row d-flex justify-content-center gap-3 mt-4">
-    <div class="d-flex flex-row justify-content-between align-items-center px-4">
-        <h3>My Account</h3>
-        <a class="btn btn-danger" href="{%url 'accounts:logout_view'%}"><i class="bi bi-box-arrow-right"></i> Logout</a>
-
+<section class="row d-flex justify-content-start gap-3 mt-4">
+    <div class="d-flex flex-row justify-content-start align-items-start px-4">
+        <h3 class="pink-title">My Account</h3>
     </div>
 
     <hr>
-    <section class="col-11 col-md-8 ">
-        <h3>Personal information</h3>
+    <section class="col-11 col-md-6 ">
+        <h3 class="green-title">Personal information</h3>
         <div class="row d-flex flex-row justify-content-center justify-content-sm-start align-items-center card shadow">
             <div class='col-auto mx-auto mx-sm-1'>
                 <i class="user-icon bi bi-person-circle"></i>
@@ -28,8 +26,8 @@
         </div>
 
     </section>
-    <section class="col-11 col-md-8 ">
-        <h3>Manage Account Settings</h3>
+    <section class="col-11 col-md-6 ">
+        <h3 class="green-title">Manage Account Settings</h3>
         <div class="row d-flex flex-row justify-content-center justify-content-sm-start align-items-center card shadow">
             <div class='col-auto m-3'>
                 <a class="text-decoration-none w-100 ms-3 d-inline-flex justify-content-start" href="#">Change email address</a>

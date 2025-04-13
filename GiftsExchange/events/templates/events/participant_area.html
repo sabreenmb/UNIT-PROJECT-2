@@ -1,71 +1,98 @@
 {%extends 'main/event_base.html'%}
-
+{%load static%}
 {%block content %}
 {% if not request.user.is_authenticated %}
 {%include 'accounts/auth_modal.html'%}
 
 {%else%}
-<section class=" row d-flex justify-content-center">
-        <div class="col-10 col-md-9 d-flex flex-column justify-content-center gap-3 mb-3 ">
+<div class="container-fluid area">
+   <section class="img-card row d-flex justify-content-center align-items-between">
+        <div style="height: 100px;"></div>
+        <div class="col-10 col-md-9 d-flex flex-column justify-content-center gap-3 mt-4 mb-3 ">
 
-            <div class="card shadow d-flex flex-column justify-content-center align-items-center">
-                <h1>{{event.event_title}}</h1>
-            </div>
-            <div class="card shadow">
-                <div class="d-flex flex-column justify-content-center align-items-center py-3">
+       
+            <div class="event-card shadow">
+                <div class="d-flex flex-column justify-content-center align-items-center gap-1 py-3">
 
-                    <h3>welcome {{request.user.first_name}}</h3>
-                    <h5>Congrats, your draw has been started!</h5>
-                    <a href="{%url 'events:participant_area_view' event.id %}" class="btn btn-danger">
+                    <h3 class="pink-title">Welcome {{request.user.first_name}}</h3>
+                    <h5 class="title mb-2">Congrats, your draw has been started!</h5>
+                    <a href="{%url 'wishList:drawn_name_view' event.id user.drawn_name.id %}" class="btn btn-custom2">
                         View {{user.drawn_name.get_full_name}} Wishlist
                     </a>
                 </div>
-
-
-
             </div>
-            <p>If you encauntered any prop;ems or have enqueries contact the event orgnizer
+            <p>If you encauntered any problems or have inqueries contact the event orgnizer
                 {{event.event_organizer.email}}</p>
+            <div class="event-card shadow">
 
+                    <h3 class="pink-title text-center item-input"> {{event.event_title}}</h3>
+ 
+            </div>
+            <div class="d-flex flex-row justify-content-center align-items-center w-100 gap-2 ">
 
-            <div class="row row-cols-1 row-cols-sm-2  ">
+                <div class="event-card  w-50 shadow" style="height: 100px;">
 
-                <div class=" card shadow" style="height: 100px;">
-
-                    <h1>downtime</h1>
-                    <p>{{event.event_date}}</p>
+                    <h3 class="title text-center"><i class="bi bi-calendar-event"></i>  Exchange Date</h3>
+                    <p class="orange-title text-center mb-0"> {{event.event_date}}</p>
 
 
                 </div>
-                <div class=" card shadow" style="height: 100px;">
-
-                    <h1>budget</h1>
-                    <p>{{event.event_min_budget}} - {{event.event_max_budget}}</p>
-                    \
+                <div class="event-card w-50 shadow" style="height: 100px;">
+                    <h3 class="title text-center"><i class="bi bi-cash"></i>  Budget</h3>
+                    <p class="orange-title text-center mb-0">{{event.event_min_budget}} - {{event.event_max_budget}}</p>
+                    
                 </div>
             </div>
+     
             <div class="d-flex flex-row justify-content-center ">
-                <h1>Draws and wishlist status</h1>
-            
-                <a href=""><i class="bi bi-bag-heart"></i></a>
-            </div>
+                <h2 class="orange-title">Draws and wishlist status</h2>
+                        </div>
             <div class="card shadow ">
 
                 <div class="table-responsive-sm card shadow participants px-4">
                     <table class="table ">
                         <thead>
                             <tr class="row">
-                                <th class="col-3 text-center">Participant</th>
-                                <th class="col-8 text-center">Wishlist</th>
+                                <th class="col-3 text-center pink-title">Participant</th>
+                                <th class="col-9 text-center pink-title">Wishlist</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {%for participant in event.participants.all%}
+                            {% for participant in event.participants.all %}
                             <tr class="row">
-                                <th class="col-3 text-center">{{participant.user.get_full_name}}</th>
-                                <th class="col-8 text-end">{{ participant.wishlist }}</th>
-                            </tr>
+                                <th class="col-3 text-center title">{{ participant.user.get_full_name }}</th>
+                                <th class="col-9 text-end">
+                                    <div class="wishlist-container d-flex justify-content-end">
+                                    
+                                        {% if participant.wishlist.count %}
 
+                                        {% for item in participant.wishlist.all %}
+                                  
+                                            {% if forloop.counter <= 3 %}
+                                                <div class="wishlist-item">
+                                                    {% if item.image %}  
+                                                        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="wishlist-image" />
+                                                    {% else %}
+                                                        <div class="no-image-container">
+                                                            <p class="item-input item-text p-1">{{ item.name }}</p>  
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if participant.wishlist.count > 3 %}
+                                        <div class="no-image-container">
+                                            <a href="#" class="text-decoration-none item-text">View More</a>
+                                        </div>
+                                        {% endif %}
+                                        {%else%}
+                                        <div class="no-image-container">
+                                            <p class="item-input item-text p-1">No items added</p>  
+                                        </div>
+                                        {%endif%}
+                                    </div>
+                                </th>
+                            </tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -76,7 +103,9 @@
         </div>
 
 
-</section>
+</section> 
+</div>i
+
 
 
 <!-- <section class="main-section">

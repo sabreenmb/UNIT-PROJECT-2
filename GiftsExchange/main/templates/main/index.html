@@ -1,0 +1,40 @@
+{%extends 'main/base.html'%}
+
+{%block content %}
+<section class="start-section d-flex flex-column justify-content-center align-items-center gap-3 p-4 ">
+
+    <h3 class="white-title text-center">Organize your event with family, friends or colleagues</h3>
+    <a href="{{new_event_url}}" class="btn btn-custom ">Start your event now </a>
+
+</section>
+
+<section class="row d-flex flex-column justify-content-center align-items-center " id="about-section">
+    <h3 class="pink-title my-4 text-center">How Does It Work?</h3>
+    <div class="col-10 col-md-6"> 
+        <div class="card-custom shadow py-2 d-flex flex-column justify-content-center align-items-center gap-1  mb-3">
+            <i class="numaric px-3 py-1"> 1 </i>
+            <h4 class="text-center title">Organization</h4>
+            <p class="text-center">Event preparation</p>
+        </div>
+        <div class="card-custom shadow py-2 d-flex flex-column justify-content-center align-items-center gap-1   mb-3">
+            <i class="numaric px-3 py-1"> 2 </i>
+            <h4 class="text-center title">Draw lots</h4>
+            <p class="text-center">The participants start their draws</p>
+        </div>
+        <div class="card-custom shadow py-2 d-flex flex-column justify-content-center align-items-center gap-1   mb-3">
+            <i class="numaric px-3 py-1"> 3 </i>
+            <h4 class="text-center title">Looking for gifts</h4>
+            <p class="text-center">Everyone finds the gift </p>
+        </div>
+        <div class="card-custom shadow py-2 d-flex flex-column justify-content-center align-items-center gap-1   mb-3">
+            <i class="numaric px-3 py-1"> 4 </i>
+            <h4 class="text-center title">Gifts exchange</h4>
+            <p class="text-center">Exchanging gifts on the Big day </p>
+        </div>
+    </div>
+</section>
+
+
+
+
+{%endblock%}

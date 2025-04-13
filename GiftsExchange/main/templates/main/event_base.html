@@ -19,17 +19,17 @@
 </head>
 
 {%url 'main:home_view' as home_url %}
-{%url 'events:participant_area_view' as participant_area_url %}
+{%url 'events:participant_area_view' event.id as participant_area_url %}
 {%url 'wishList:wishList_view' event.id as wishlist_url %}
-{%url 'wishList:gift_finder_view' as gift_finder_url %}
+{%url 'wishList:gift_finder_view' event.id as gift_finder_url %}
 
 
 <body class="w-100">
     <header class="container-fluid fixid-top px-5 mb-3">
         <nav class="navbar navbar-expand-md ">
             <div class="container-fluid">
-                <a class="navbar-brand" href={{home_url}}>Gifts Exchange</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#right-nav"
+                <a class="navbar-brand" href={{home_url}}><img src="{%static 'images/logo/logo-no-background.png'%}"
+                    alt="logo"></a>                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#right-nav"
                     aria-controls="right-nav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -42,20 +42,14 @@
                             </a>
                         </li>           
                         <li class="nav-item d-flex flex-column col justify-content-center align-items-center text-center">
-                            <a  href="#" class="nav-link text-decoration-none">
-                                <i class="bi bi-gift"></i> 
-                                <h6>Drawn Name</h6>
-                            </a>
-                        </li>
-                        <li class="nav-item d-flex flex-column col justify-content-center align-items-center text-center">
-                            <a  href="{{wishlist_url}}" class="nav-link text-decoration-none">
+                            <a  href="{{wishlist_url}}" class="nav-link text-decoration-none {%if request.path == wishlist_url%}active{%endif%}">
                                 <i class="bi bi-bag-heart"></i>
                                 <h6>My wishlist</h6>
                             </a>
                         </li>           
                         <li class="nav-item d-flex flex-column col justify-content-center align-items-center text-center">
-                            <a  href="{{gift_finder_url}}" class="nav-link text-decoration-none">
-                                <i class="bi bi-bag-heart"></i>
+                            <a  href="{{gift_finder_url}}" class="nav-link text-decoration-none {%if request.path == gift_finder_url%}active{%endif%}">
+                                <i class="bi bi-gift"></i> 
                                 <h6>Gift Finder</h6>
                             </a>
                         </li>
@@ -66,7 +60,7 @@
         </nav>
 
     </header>
-    <main class="px-5">
+    <main class="area mb-3">
         <div id="alertsContainer">
             {% if messages %}
                 {% for msg in messages %}
@@ -77,63 +71,13 @@
                 {% endfor %}
             {% endif %}
         </div>
-
-        <!-- {%if messages%}
-            {%for msg in messages%}
-            <h1>{{msg}}</h1>
-            <div id="copyAlert" class="alert {{msg.tags}} alert-dismissible fade show" role="alert">
-                <p id="alertMessage">{{msg}}</p>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
-                    onclick="hideCopyMessage()"></button>
-            </div>
-            {%endfor%}
-        {%endif%} -->
         {%block content%}
 
         {%endblock%}
 
     </main>
-    <footer class="py-1 my-4">
-        <p class="text-center text-body-secondary">&copy; 2025 All right reserved</p>
 
-    </footer>
-
-<script>
-    // Function to show all alerts in sequence
-    function showAlerts() {
-        const alerts = document.querySelectorAll('.alert');
-        if (alerts.length === 0) return; // Exit if no alerts exist
-
-        let currentAlertIndex = 0;
-
-        function displayNextAlert() {
-            // Hide all alerts
-            alerts.forEach(alert => alert.style.display = 'none');
-
-            if (currentAlertIndex < alerts.length) {
-                // Show the current alert
-                alerts[currentAlertIndex].style.display = 'block';
-
-                // Automatically hide the alert after 4 seconds
-                setTimeout(() => {
-                    hideAlert(alerts[currentAlertIndex]); // Hide the current alert
-                    currentAlertIndex++; // Move to the next alert
-                    displayNextAlert(); // Show the next alert
-                }, 4000); // Adjust the duration as needed
-            }
-        }
-
-        displayNextAlert(); // Start displaying alerts
-    }
-
-    function hideAlert(alert) {
-        alert.style.display = 'none';
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        showAlerts(); // Call the function to show alerts when the page loads
-    });
-</script>
+    <script src="{% static 'js/script.js' %}"></script>
 
 
 

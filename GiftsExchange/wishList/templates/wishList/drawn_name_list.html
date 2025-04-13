@@ -1,0 +1,59 @@
+{%extends 'main/event_base.html'%}
+{%load static%}
+{%block content %}
+{% if not request.user.is_authenticated %}
+{%include 'accounts/auth_modal.html'%}
+
+{%else%}
+
+<section class="row d-flex justify-content-center w-100">
+    <div class="col-6 col-md-4 d-flex flex-column justify-content-start align-items-center">
+        <div class="w-100 p-4 event-card d-flex flex-column justify-content-center align-items-center   ">
+            <img class="" src="{% static 'images/img-3.png' %}" alt=""style="height: 100px;">
+            <h3 class="title">Drawn Name</h3>
+            <h3 class="orange-title text-center">{{drawn_participant.user.get_full_name}}</h3>
+        </div>
+
+    </div>
+
+    <div class='col-sm-11 col-md-8 d-flex flex-column py-2'>
+
+        <div class="w-100">
+            <a class="d-flex flex-column justify-content-center align-items-center"
+                style="background-color:#c90168 ; text-decoration: none; padding: 10px 15px; border-radius: 15PX;">
+                <h5 class="white-title item-input text-center">{{event.event_title}} test</h5>
+                <p class="white-title ">{{drawn_participant.wishlist.count}} Gifts</p>
+            </a>
+        </div>
+    
+        <div id="wishlist-container">
+            <div class="p-2 ">
+                {% if drawn_participant.wishlist.count %}
+                {% for item in drawn_participant.wishlist.all %}
+                <div class="container-fluid  card shadow p-2 mb-1 item-input ">
+                    <div class="d-flex justify-content-between a w-100">
+    
+                        <div class="d-flex align-items-center gap-3  item-input"> <!-- Keep flex-grow-1 for expansion -->
+                            <i class="bi bi-gift orange-title"></i>
+                            <p class="mb-0 title">{{ item.name }}
+                            <p>
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+                <input type="hidden" id="items_num" value="{{ wishItems|length }}">
+                {% else %}
+                <div class="card w-100 d-flex flex-row justify-content-center align-items-center my-3">
+                    <h6 class="pink-title p-2">No gifts requested yet</h6>
+                </div>
+                {% endif %}
+            </div>
+    
+        </div>
+    </div>
+</section>
+
+
+{%endif%}
+{%endblock%}

@@ -7,12 +7,14 @@
     {% include 'events/events_list.html' %}
 {% else %}   
 
-    <section class="main-section">
-        <div class="d-flex flex-column justify-content-center align-items-center gap-3">
-            <h1>does not have an event yet</h1>
-            <a href="{{ new_event_url }}" class="btn btn-danger col-4 mx-auto">start an event</a>
+<section class="main-section d-flex justify-content-center align-items-center" >
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-8 d-flex flex-column justify-content-center align-items-center event-card shadow">
+            <h3 class="title">You do not have an event yet</h3>
+            <a href="{{ new_event_url }}" class="btn btn-custom col-10 col-md-6 mx-auto">Start an event</a>
         </div>
-    </section>
+    </div>
+</section>
 {% endif %}
 {% endif %}
 {% endblock%}

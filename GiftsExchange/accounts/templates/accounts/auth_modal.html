@@ -10,19 +10,19 @@
             aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header  ">
                         <h1 class="modal-title fs-5" id="staticBackdropLabel">Authentication Required</h1>
                     </div>
                     <div class="modal-body">
                         <p>Please login to access this feature.</p>
                     </div>
-                    <div class="modal-body row mx-auto">
-                        <a href="{%url 'accounts:sign_in_view'%}" class="btn btn-danger col-auto me-1"
+                    <div class="modal-body row d-flex justify-content-center gap-2 mx-auto ">
+                        <a href="{%url 'accounts:sign_in_view'%}" class="btn btn-custom col-auto  me-1 "
                             aria-disabled="true"><i class="bi bi-person-fill"></i>
                             Sign in</a>
-                        <a href="{%url 'main:home_view'%}" class="btn btn-danger col-auto "
+                        <a href="{%url 'main:home_view'%}" class="btn btn-custom col-auto  "
                             aria-disabled="true"><i class="bi bi-house-fill"></i>
-                           Back to the home</a>
+                            Back to the home</a>
                     </div>
                 </div>
             </div>

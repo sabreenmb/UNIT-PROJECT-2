@@ -1,22 +1,24 @@
 {%extends 'main/event_base.html'%}
-
+{%load static%}
 {%block content %}
 
 
-<section class="main-section row d-flex justify-content-center w-100">
-    <div class="col-sm-10 col-md-7 d-flex flex-row justify-content-start gap-3">
-        <div class="card shadow">
-            <img src="main/static/images/oil.jpg">
-            <p>Oil</p>
-            <a href="https://amzn.to/4cq8zhg">Link to amazon</a>
+<section class=" px-4 row d-flex justify-content-center w-100">
+    <div class="container-fluid p-2 m-3">
+        <div class="row gap-2">
+            {%for gift in gifts%}
+            <div class="col-9 col-sm-5 col-md-4 col-xl-2 mb-sm-3 card">
+                <div class=" d-flex flex-column me-1 ">
+                    <img src="{{ gift.image.url }}" class=" mb-3 w-100 object-fit" alt="{{ gift.name }}">
+                    <p class="item-input">{{gift.name}}</p>
+                    <a href="{{gift.link}}" class="btn btn-custom2" target="_blank">Link to amazon</a>              
+                 
+                </div>
+            </div>
+            {% endfor %}
         </div>
-        <div class="card shadow">
-            <img src="GiftsExchange\main\static\images\kids.jpg">
-            <p> Magnetic Tiles Building Blocks</p>
-            <a href="https://amzn.to/4icjwEs">Link to amazon</a>
-        </div>
-
     </div>
+
 
 
  

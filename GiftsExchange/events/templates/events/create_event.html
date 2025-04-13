@@ -5,63 +5,47 @@
 
 {% endif %}
 
-<section class="">
-    <h2>1 Your Event</h2>
-    <form class="row g-3" action="{% url 'events:create_event_view'%}" method="POST">
+<section class="px-4 pt-4">
+    <div class="d-flex flex-row justify-content-start align-items-center mb-4">
+        <h2 class="pink-title mb-0 text-center"> <i class="bi bi-1-circle number-icon me-2"></i>
+            Your Event</h2>
+    </div>
+    <form class="row g-3" onsubmit="validateBudgetAndDate(event)" action="{% url 'events:create_event_view'%}" method="POST">
         {%csrf_token%}
 
 
-        <div class="col-md-12">
+        <div class="col-md-10">
             <label for="event_title" class="form-label">Event Title</label>
             <input type="text" class="form-control" id="event_title" name="event_title" required>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-10">
             <label for="event_date" class="form-label">Exchange Date</label>
             <input type="date" class="form-control" id="event_date" name="event_date" required>
         </div>
-        <div class="col-12">
+        <div class="col-md-10">
             <label for="event_description" class="form-label">Event Description</label>
             <textarea type="text" class="form-control" id="event_description" name="event_description"
                 required></textarea>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
             <label for="event_min_budget" class="form-label">Min Budget</label>
             <input type="number" class="form-control" id="event_min_budget" name="event_min_budget" required>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
             <label for="event_max_budget" class="form-label">Max Budget</label>
             <input type="number" class="form-control" id="event_max_budget" name="event_max_budget" required>
         </div>
-        <!-- <div class="col-md-6">
-            <label for="inputCity" class="form-label">City</label>
-            <input type="text" class="form-control" id="inputCity">
-          </div>
-        <div class="col-md-4">
-          <label for="inputState" class="form-label">State</label>
-          <select id="inputState" class="form-select">
-            <option selected>Choose...</option>
-            <option>...</option>
-          </select>
+
+
+
+        <div class="d-flex flex-row justify-content-start align-items-center mb-4">
+            <h2 class="pink-title mb-0 text-center"> <i class="bi bi-2-circle number-icon me-2"></i>
+                Participant List</h2>
         </div>
-        <div class="col-md-2">
-          <label for="inputZip" class="form-label">Zip</label>
-          <input type="text" class="form-control" id="inputZip">
-        </div> -->
-        <!-- <div class="col-12">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="gridCheck">
-            <label class="form-check-label" for="gridCheck">
-              Check me out
-            </label>
-          </div>
-        </div> -->
 
-
-
-        <h2>2 Participant List</h2>
-
-        <div class="card shadow p-4">
-            <p>Below, list the participants in your event. Not sure who is participating yet? No problem, just share a link to allow everyone to register.
+        <div class="card shadow p-4 col-md-10">
+            <p>Below, list the participants in your event. Not sure who is participating yet? No problem, just share a
+                link to allow everyone to register.
                 You can rule out undesirable participant pairings later</p>
             <div class="row participant-input" id="participant">
                 <div class="col-5">
@@ -74,27 +58,27 @@
             <div id="participant-container"> <!-- Container for participant inputs -->
 
                 <div class="row participant-input mb-1" id="participant-1">
-                    <div class="col-md-5">
+                    <div class="col-6 col-md-5">
                         <input type="text" class="form-control" id="participant_name_1" name="participant_name_1"
                             placeholder="Name.." value="{{user.get_full_name}}" required>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-6 col-md-5">
                         <input type="email" class="form-control" id="participant_email_1" name="participant_email_1"
                             placeholder="Email.." value="{{user.email}}" required>
                     </div>
-                    <div class="col-md-2">
-                        <input type="button" class="btn btn-danger" value="Remove" onclick="removeParticipant(this)">
+                    <div class="col-2 mt-2 mt-md-0">
+                        <input type="button" class="btn btn-custom" value="Remove" onclick="removeParticipant(this)">
                     </div>
                 </div>
             </div>
 
             <div class="col-md-2">
-                <input type="button" class="btn btn-primary" value="Add Participant" onclick="addParticipant()">
+                <input type="button" class="btn btn-custom2 mt-1" value="Add Participant" onclick="addParticipant()">
             </div>
         </div>
 
-        <div class="d-flex flex-row justify-content-center ">
-            <button type="submit" class="btn btn-danger w-50">Start Event</button>
+        <div class="col-md-10 d-flex flex-row justify-content-center ">
+            <button type="submit" class="btn btn-custom w-50">Start Event</button>
         </div>
     </form>
 
@@ -114,14 +98,14 @@
         // Create a new div for the participant input
         const newParticipant = `
             <div class="row participant-input mb-1" id="participant-${participantCount}">
-                <div class="col-md-5">
+                <div class="col-6 col-md-5">
                     <input type="text" class="form-control" id="participant_name_${participantCount}" placeholder="Name.." name="participant_name_${participantCount}" required>
                 </div>
-                <div class="col-md-5">
+                <div class="col-6 col-md-5">
                     <input type="email" class="form-control" id="participant_email_${participantCount}" placeholder="Email.." name="participant_email_${participantCount}" required>
                 </div>
-                <div class="col-md-2">
-                    <input type="button" class="btn btn-danger" value="Remove" onclick="removeParticipant(this)">
+                <div class="col-2 mt-2 mt-md-0">
+                    <input type="button" class="btn btn-custom" value="Remove" onclick="removeParticipant(this)">
                 </div>
             </div>
         `;
@@ -134,6 +118,7 @@
         // Remove the participant input section
         const participantRow = button.closest('.participant-input');
         participantRow.remove();
+        
     }
 </script>
 

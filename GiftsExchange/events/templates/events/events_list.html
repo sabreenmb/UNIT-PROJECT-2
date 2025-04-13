@@ -1,25 +1,32 @@
+{%load static%}
 <html>
 
 <head></head>
 
 <body>
-    <section class="main-section">
+    <section class=" event-section">
 
         {%for event in events%}
-        <div class="d-flex flex-column mb-3">
-            <div class="card shadow">
-                <p>{{event.event_organizer}}</p>
-                <p>{{event.event_title}}</p>
-                <p>{{event.event_date}}</p>
-                <p>{{event.event_min_budget}}</p>
-                <p>{{event.event_max_budget}}</p>
-                <p>{{event.is_draw}}</p>
-                <form action="{%url 'events:event_management_view'%}" method="get">
-                    <input type="hidden" name="event_id" value="{{event.id}}">
-                    <button type="submit" class="btn btn-danger col-4 mx-auto" aria-disabled="true">manage the
-                        event</button>
+        <div class="row d-flex flex-column justify-content-center align-items-center m-4">
+            <div class="col-md-10 event-card shadow">
+                <div class="row" >
+                    <img class="col-md-5" src="{% static 'images/img-3.png' %}" alt="">
+                    <div class="col-md-7 d-flex flex-column gap-2 my-4">
+                        <h3 class="pink-title my-4 item-input">{{event.event_title}}</h3>
+                        <p class="title"><i class="bi bi-calendar-event"></i> {{event.event_date}}</p>
+                        <p class="title"><i class="bi bi-cash"></i> {{event.event_min_budget}} - {{event.event_max_budget}}</p>
+                        <p class="title" ><i class="bi bi-people"></i> {{event.participants.count}} Participants</p>
 
-                </form>
+                        <form action="{%url 'events:event_management_view'%}" method="get" class="w-100 mt-auto">
+                            <input type="hidden" name="event_id" value="{{event.id}}">
+                            <button type="submit" class="btn btn-custom2 col-12 col-md-6 " aria-disabled="true">Manage the
+                                event</button>
+    
+                        </form>
+                    </div>
+      
+                </div>
+
 
             </div>
         </div>
